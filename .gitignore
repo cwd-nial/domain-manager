@@ -3,6 +3,9 @@
 # IDE
 .idea
 
+# Claude
+.claude/settings.local.json
+
 # dependencies
 /node_modules
 /.pnp
