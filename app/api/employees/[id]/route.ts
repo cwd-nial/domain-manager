@@ -1,0 +1,198 @@
+import { NextResponse } from "next/server";
+import { eq } from "drizzle-orm";
+import { db } from "@/lib/db";
+import {
+  employees,
+  employeeRoles,
+  employeePositions,
+  employeeTeams,
+  roles,
+  positions,
+  teams,
+} from "@/drizzle/schema";
+
+type Params = { params: Promise<{ id: string }> };
+
+function wouldCreateCycle(
+  employeeId: string,
+  newManagerId: string,
+  managerMap: Record<string, string | null>,
+): boolean {
+  let current: string | null = newManagerId;
+  const visited = new Set<string>();
+  while (current !== null && !visited.has(current)) {
+    if (current === employeeId) return true;
+    visited.add(current);
+    current = managerMap[current] ?? null;
+  }
+  return false;
+}
+
+export async function GET(_: Request, { params }: Params) {
+  const { id } = await params;
+
+  const [emp] = await db
+    .select()
+    .from(employees)
+    .where(eq(employees.id, id));
+  if (!emp) return NextResponse.json({ error: "Not found" }, { status: 404 });
+
+  const [
+    empRoles,
+    empPositions,
+    empTeams,
+    allRoles,
+    allPositions,
+    allTeams,
+    allEmps,
+    reports,
+  ] = await Promise.all([
+    db
+      .select()
+      .from(employeeRoles)
+      .where(eq(employeeRoles.employeeId, id)),
+    db
+      .select()
+      .from(employeePositions)
+      .where(eq(employeePositions.employeeId, id)),
+    db
+      .select()
+      .from(employeeTeams)
+      .where(eq(employeeTeams.employeeId, id)),
+    db.select().from(roles),
+    db.select().from(positions),
+    db.select().from(teams),
+    db
+      .select({ id: employees.id, name: employees.name })
+      .from(employees),
+    db
+      .select({ id: employees.id, name: employees.name })
+      .from(employees)
+      .where(eq(employees.managerId, id)),
+  ]);
+
+  const rolesById = Object.fromEntries(allRoles.map((r) => [r.id, r.name]));
+  const positionsById = Object.fromEntries(
+    allPositions.map((p) => [p.id, p.name]),
+  );
+  const teamsById = Object.fromEntries(allTeams.map((t) => [t.id, t.name]));
+  const empById = Object.fromEntries(allEmps.map((e) => [e.id, e.name]));
+
+  return NextResponse.json({
+    ...emp,
+    managerName: emp.managerId ? (empById[emp.managerId] ?? null) : null,
+    roles: empRoles.map((er) => ({
+      id: er.roleId,
+      name: rolesById[er.roleId] ?? "",
+    })),
+    positions: empPositions.map((ep) => ({
+      id: ep.positionId,
+      name: positionsById[ep.positionId] ?? "",
+    })),
+    teams: empTeams.map((et) => ({
+      id: et.teamId,
+      name: teamsById[et.teamId] ?? "",
+    })),
+    reports,
+  });
+}
+
+export async function PUT(request: Request, { params }: Params) {
+  const { id } = await params;
+  const body = await request.json();
+  const { name, email, phone, avatarUrl, managerId, roleIds, positionIds, teamIds } =
+    body;
+
+  if (!name?.trim()) {
+    return NextResponse.json({ error: "Name is required" }, { status: 400 });
+  }
+
+  if (managerId) {
+    const allEmps = await db
+      .select({ id: employees.id, managerId: employees.managerId })
+      .from(employees);
+    const managerMap = Object.fromEntries(
+      allEmps.map((e) => [e.id, e.managerId ?? null]),
+    );
+    if (wouldCreateCycle(id, managerId, managerMap)) {
+      return NextResponse.json(
+        { error: "Cycle detected in manager hierarchy" },
+        { status: 400 },
+      );
+    }
+  }
+
+  await db
+    .update(employees)
+    .set({
+      name,
+      email: email || null,
+      phone: phone || null,
+      avatarUrl: avatarUrl || null,
+      managerId: managerId || null,
+      updatedAt: new Date(),
+    })
+    .where(eq(employees.id, id));
+
+  if (roleIds !== undefined) {
+    await db
+      .delete(employeeRoles)
+      .where(eq(employeeRoles.employeeId, id));
+    if (roleIds.length > 0) {
+      await db
+        .insert(employeeRoles)
+        .values(
+          roleIds.map((roleId: string) => ({ employeeId: id, roleId })),
+        );
+    }
+  }
+
+  if (positionIds !== undefined) {
+    await db
+      .delete(employeePositions)
+      .where(eq(employeePositions.employeeId, id));
+    if (positionIds.length > 0) {
+      await db.insert(employeePositions).values(
+        positionIds.map((positionId: string) => ({
+          employeeId: id,
+          positionId,
+        })),
+      );
+    }
+  }
+
+  if (teamIds !== undefined) {
+    await db
+      .delete(employeeTeams)
+      .where(eq(employeeTeams.employeeId, id));
+    if (teamIds.length > 0) {
+      await db
+        .insert(employeeTeams)
+        .values(
+          teamIds.map((teamId: string) => ({ employeeId: id, teamId })),
+        );
+    }
+  }
+
+  return NextResponse.json({ success: true });
+}
+
+export async function DELETE(_: Request, { params }: Params) {
+  const { id } = await params;
+
+  const [report] = await db
+    .select({ id: employees.id })
+    .from(employees)
+    .where(eq(employees.managerId, id))
+    .limit(1);
+
+  if (report) {
+    return NextResponse.json(
+      { error: "Cannot delete: employee has direct reports" },
+      { status: 400 },
+    );
+  }
+
+  await db.delete(employees).where(eq(employees.id, id));
+  return NextResponse.json({ success: true });
+}
