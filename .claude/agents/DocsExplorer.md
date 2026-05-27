@@ -1,7 +1,6 @@
 ---
 name: DocsExplorer
-description: Documentation lookup specialist. Use proactively when needing docs for any library, 
-  framework, or technology. Fetches docs in parallel for multiple technologies.
+description: Documentation lookup specialist. Use proactively when needing docs for any library, framework, or technology. Fetches docs in parallel for multiple technologies.
 tools: WebFetch, WebSearch, Skill, MCPSearch
 model: haiku
 ---
