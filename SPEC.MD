@@ -24,10 +24,18 @@ A Next.js application for managing employees, teams, roles, and positions within
 
 ### 3.1 Core tables
 
-**`users`** — managed by better-auth
-```
-id, email, password_hash, name, created_at
-```
+**Auth tables** — managed by better-auth (do not define manually)
+
+better-auth creates and owns four tables via its CLI (`npx auth@latest migrate`):
+
+| Table | Key columns |
+|---|---|
+| `user` | `id`, `name`, `email`, `emailVerified`, `image`, `createdAt`, `updatedAt` |
+| `session` | `id`, `token`, `userId`, `expiresAt`, `ipAddress`, `userAgent`, `createdAt`, `updatedAt` |
+| `account` | `id`, `accountId`, `providerId`, `userId`, `password`, `createdAt`, `updatedAt` |
+| `verification` | `id`, `identifier`, `value`, `expiresAt`, `createdAt`, `updatedAt` |
+
+Run `npx auth@latest generate` to output the schema, or `npx auth@latest migrate` to apply it directly.
 
 **`employees`**
 ```
@@ -182,10 +190,10 @@ Configuration sketch:
 ```ts
 // lib/auth.ts
 import { betterAuth } from "better-auth";
-import { db } from "./db";
+import Database from "better-sqlite3";
 
 export const auth = betterAuth({
-  database: { db, type: "sqlite" },
+  database: new Database(process.env.DATABASE_URL!),
   emailAndPassword: { enabled: true },
 });
 ```
