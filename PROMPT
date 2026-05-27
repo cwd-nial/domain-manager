@@ -1,0 +1,30 @@
+I want to build a web application to keep track of the employees that are part of my domain.
+
+The application is a next-js application using TypeScript, with CSS stylesheets.
+As a database I want to use SQLite and as authorization I will use the better-auth library.
+The application should be viewable publicly with the right user and password access.
+
+I want to be able to:
+- add/modify/delete employees
+- add/modify/delete teams with the domain
+- create a hierarchy tree of employees and of teams
+- assign roles to the employees, with the possibility of more than one role:
+  - Frontend developer
+  - Backend developer
+  - Fullstack developer
+  - QA engineer
+  - Product Owner
+  - UX designer
+- assign positions to the employees, with the possibility of more than one:
+  - Domain Lead
+  - Solution Architect
+  - Team Lead
+  - Engineering Lead
+  - Developer
+  - PO
+  - QA
+  - UX
+
+The main page should consist of a two hierarchy views, one team based and one employee based.
+
+Can you please write a technical specification for this application?
