@@ -69,7 +69,8 @@ await client.batch([
   {
     sql: `CREATE TABLE IF NOT EXISTS employees (
       id TEXT PRIMARY KEY,
-      name TEXT NOT NULL,
+      first_name TEXT NOT NULL DEFAULT '',
+      last_name TEXT NOT NULL DEFAULT '',
       email TEXT UNIQUE,
       phone TEXT,
       avatar_url TEXT,
@@ -177,6 +178,70 @@ if ((positionsCount.rows[0] as unknown as { count: number }).count === 0) {
       args: [id, name],
     })),
   );
+}
+
+// ── Migrate employees: split name → first_name/last_name, then drop name ──────
+const empCols = await client.execute({
+  sql: "PRAGMA table_info(employees)",
+  args: [],
+});
+const empColNames = new Set(empCols.rows.map((r) => String(r[1])));
+
+// Step 1: add first_name/last_name if missing (old DBs without the columns)
+if (!empColNames.has("first_name")) {
+  await client.batch([
+    {
+      sql: "ALTER TABLE employees ADD COLUMN first_name TEXT NOT NULL DEFAULT ''",
+      args: [],
+    },
+    {
+      sql: "ALTER TABLE employees ADD COLUMN last_name TEXT NOT NULL DEFAULT ''",
+      args: [],
+    },
+  ]);
+  await client.execute({
+    sql: `UPDATE employees SET
+      first_name = CASE WHEN instr(name, ' ') > 0
+        THEN substr(name, 1, instr(name, ' ') - 1)
+        ELSE name END,
+      last_name = CASE WHEN instr(name, ' ') > 0
+        THEN substr(name, instr(name, ' ') + 1)
+        ELSE '' END`,
+    args: [],
+  });
+}
+
+// Step 2: drop the name column by recreating the table without it
+if (empColNames.has("name")) {
+  await client.execute({ sql: "PRAGMA foreign_keys = OFF", args: [] });
+  await client.execute({ sql: "DROP TABLE IF EXISTS employees_new", args: [] });
+  await client.execute({
+    sql: `CREATE TABLE employees_new (
+      id TEXT PRIMARY KEY,
+      first_name TEXT NOT NULL DEFAULT '',
+      last_name TEXT NOT NULL DEFAULT '',
+      email TEXT UNIQUE,
+      phone TEXT,
+      avatar_url TEXT,
+      manager_id TEXT REFERENCES employees(id),
+      created_at INTEGER,
+      updated_at INTEGER
+    )`,
+    args: [],
+  });
+  await client.execute({
+    sql: `INSERT INTO employees_new
+      (id, first_name, last_name, email, phone, avatar_url, manager_id, created_at, updated_at)
+      SELECT id, first_name, last_name, email, phone, avatar_url, manager_id, created_at, updated_at
+      FROM employees`,
+    args: [],
+  });
+  await client.execute({ sql: "DROP TABLE employees", args: [] });
+  await client.execute({
+    sql: "ALTER TABLE employees_new RENAME TO employees",
+    args: [],
+  });
+  await client.execute({ sql: "PRAGMA foreign_keys = ON", args: [] });
 }
 
 export const db = drizzle(client, { schema });

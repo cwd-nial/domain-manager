@@ -12,6 +12,7 @@ import {
   teams,
 } from "@/drizzle/schema";
 import { EmployeeForm } from "@/components/EmployeeForm";
+import { FormattedName } from "@/components/FormattedName";
 
 type PageProps = { params: Promise<{ id: string }> };
 
@@ -44,23 +45,28 @@ export default async function EditEmployeePage({ params }: PageProps) {
     db.select().from(positions),
     db.select().from(teams),
     db
-      .select({ id: employees.id, name: employees.name })
+      .select({ id: employees.id, firstName: employees.firstName, lastName: employees.lastName })
       .from(employees),
   ]);
 
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-        Edit — {emp.name}
+        Edit —{" "}
+        <FormattedName firstName={emp.firstName} lastName={emp.lastName} />
       </h1>
       <EmployeeForm
         roles={allRoles}
         positions={allPositions}
         teams={allTeams}
-        employees={allEmployees}
+        employees={allEmployees.map((e) => ({
+          id: e.id,
+          name: `${e.firstName} ${e.lastName}`.trim(),
+        }))}
         defaultValues={{
           id: emp.id,
-          name: emp.name,
+          firstName: emp.firstName,
+          lastName: emp.lastName,
           email: emp.email ?? "",
           phone: emp.phone ?? "",
           avatarUrl: emp.avatarUrl ?? "",

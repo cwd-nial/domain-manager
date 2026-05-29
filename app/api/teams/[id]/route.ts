@@ -30,7 +30,7 @@ export async function GET(_: Request, { params }: Params) {
     db.select().from(employeeTeams).where(eq(employeeTeams.teamId, id)),
     db.select().from(teams).where(eq(teams.parentId, id)),
     db
-      .select({ id: employees.id, name: employees.name, email: employees.email })
+      .select({ id: employees.id, firstName: employees.firstName, lastName: employees.lastName, email: employees.email })
       .from(employees),
   ]);
 

@@ -8,7 +8,7 @@ import {
   roles,
   positions,
 } from "@/drizzle/schema";
-import { BadgeGroup } from "@/components/BadgeGroup";
+import { EmployeeListClient } from "./EmployeeListClient";
 
 export default async function EmployeesPage() {
   await requireAuth();
@@ -27,7 +27,10 @@ export default async function EmployeesPage() {
   );
 
   const enriched = allEmps.map((emp) => ({
-    ...emp,
+    id: emp.id,
+    firstName: emp.firstName,
+    lastName: emp.lastName,
+    email: emp.email,
     roleNames: allEmpRoles
       .filter((er) => er.employeeId === emp.id)
       .map((er) => rolesById[er.roleId] ?? ""),
@@ -49,69 +52,7 @@ export default async function EmployeesPage() {
           + New Employee
         </Link>
       </div>
-      <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
-        <table className="w-full text-sm">
-          <thead className="bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
-            <tr>
-              <th className="text-left px-4 py-3 font-medium text-gray-700 dark:text-gray-300">
-                Name
-              </th>
-              <th className="text-left px-4 py-3 font-medium text-gray-700 dark:text-gray-300">
-                Email
-              </th>
-              <th className="text-left px-4 py-3 font-medium text-gray-700 dark:text-gray-300">
-                Roles
-              </th>
-              <th className="text-left px-4 py-3 font-medium text-gray-700 dark:text-gray-300">
-                Positions
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
-            {enriched.length === 0 ? (
-              <tr>
-                <td
-                  colSpan={4}
-                  className="px-4 py-10 text-center text-gray-400 dark:text-gray-500 italic"
-                >
-                  No employees yet —{" "}
-                  <Link
-                    href="/employees/new"
-                    className="text-blue-600 dark:text-blue-400 hover:underline"
-                  >
-                    add one
-                  </Link>
-                </td>
-              </tr>
-            ) : (
-              enriched.map((emp) => (
-                <tr
-                  key={emp.id}
-                  className="hover:bg-gray-50 dark:hover:bg-gray-700"
-                >
-                  <td className="px-4 py-3">
-                    <Link
-                      href={`/employees/${emp.id}`}
-                      className="font-medium text-blue-600 dark:text-blue-400 hover:underline"
-                    >
-                      {emp.name}
-                    </Link>
-                  </td>
-                  <td className="px-4 py-3 text-gray-600 dark:text-gray-400">
-                    {emp.email ?? "—"}
-                  </td>
-                  <td className="px-4 py-3">
-                    <BadgeGroup items={emp.roleNames} variant="role" />
-                  </td>
-                  <td className="px-4 py-3">
-                    <BadgeGroup items={emp.positionNames} variant="position" />
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
+      <EmployeeListClient employees={enriched} />
     </div>
   );
 }

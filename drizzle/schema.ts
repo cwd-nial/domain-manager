@@ -100,7 +100,8 @@ export const verification = sqliteTable(
 
 export const employees = sqliteTable("employees", {
   id: text("id").primaryKey(),
-  name: text("name").notNull(),
+  firstName: text("first_name").notNull().default(""),
+  lastName: text("last_name").notNull().default(""),
   email: text("email").unique(),
   phone: text("phone"),
   avatarUrl: text("avatar_url"),

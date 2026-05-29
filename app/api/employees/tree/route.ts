@@ -10,7 +10,8 @@ import {
 
 type EmployeeNode = {
   id: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string | null;
   roles: { id: string; name: string }[];
   positions: { id: string; name: string }[];
@@ -37,7 +38,8 @@ export async function GET() {
       e.id,
       {
         id: e.id,
-        name: e.name,
+        firstName: e.firstName,
+        lastName: e.lastName,
         email: e.email,
         roles: allEmpRoles
           .filter((er) => er.employeeId === e.id)

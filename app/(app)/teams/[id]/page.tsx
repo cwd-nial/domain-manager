@@ -20,7 +20,7 @@ export default async function TeamDetailPage({ params }: PageProps) {
     db.select().from(teams).where(eq(teams.parentId, id)),
     db.select({ id: teams.id, name: teams.name }).from(teams),
     db
-      .select({ id: employees.id, name: employees.name, email: employees.email })
+      .select({ id: employees.id, firstName: employees.firstName, lastName: employees.lastName, email: employees.email })
       .from(employees),
   ]);
 
@@ -77,7 +77,7 @@ export default async function TeamDetailPage({ params }: PageProps) {
                     href={`/employees/${m.id}`}
                     className="text-sm text-blue-600 dark:text-blue-400 hover:underline font-medium"
                   >
-                    {m.name}
+                    {`${m.firstName} ${m.lastName}`.trim()}
                   </Link>
                   {m.email && (
                     <span className="text-xs text-gray-400 dark:text-gray-500">

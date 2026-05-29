@@ -34,7 +34,9 @@ export async function GET() {
     allPositions.map((p) => [p.id, p.name]),
   );
   const teamsById = Object.fromEntries(allTeams.map((t) => [t.id, t.name]));
-  const empById = Object.fromEntries(allEmps.map((e) => [e.id, e.name]));
+  const empById = Object.fromEntries(
+    allEmps.map((e) => [e.id, `${e.firstName} ${e.lastName}`.trim()]),
+  );
 
   const result = allEmps.map((emp) => ({
     ...emp,
@@ -59,7 +61,8 @@ export async function GET() {
 export async function POST(request: Request) {
   const body = await request.json();
   const {
-    name,
+    firstName,
+    lastName = "",
     email,
     phone,
     avatarUrl,
@@ -69,8 +72,11 @@ export async function POST(request: Request) {
     teamIds = [],
   } = body;
 
-  if (!name?.trim()) {
-    return NextResponse.json({ error: "Name is required" }, { status: 400 });
+  if (!firstName?.trim()) {
+    return NextResponse.json(
+      { error: "First name is required" },
+      { status: 400 },
+    );
   }
 
   const id = crypto.randomUUID();
@@ -78,7 +84,8 @@ export async function POST(request: Request) {
 
   await db.insert(employees).values({
     id,
-    name,
+    firstName: firstName.trim(),
+    lastName: lastName.trim(),
     email: email || null,
     phone: phone || null,
     avatarUrl: avatarUrl || null,

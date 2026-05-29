@@ -4,11 +4,13 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { useDarkMode } from "@/hooks/useDarkMode";
+import { useNameFormat } from "@/lib/nameFormatContext";
 
 export function NavShell() {
   const pathname = usePathname();
   const router = useRouter();
   const [isDark, toggleDark] = useDarkMode();
+  const [format, toggleFormat] = useNameFormat();
 
   const links = [
     { href: "/", label: "Home" },
@@ -49,6 +51,12 @@ export function NavShell() {
           })}
         </nav>
         <div className="flex items-center gap-3">
+          <button
+            onClick={toggleFormat}
+            className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+          >
+            {format === "FL" ? "First Last" : "Last, First"}
+          </button>
           <button
             onClick={toggleDark}
             className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"

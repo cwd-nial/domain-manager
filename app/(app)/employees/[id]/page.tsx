@@ -14,6 +14,7 @@ import {
 } from "@/drizzle/schema";
 import { BadgeGroup } from "@/components/BadgeGroup";
 import { DeleteButton } from "@/components/DeleteButton";
+import { FormattedName } from "@/components/FormattedName";
 
 type PageProps = { params: Promise<{ id: string }> };
 
@@ -46,9 +47,11 @@ export default async function EmployeeDetailPage({ params }: PageProps) {
     db.select().from(roles),
     db.select().from(positions),
     db.select().from(teams),
-    db.select({ id: employees.id, name: employees.name }).from(employees),
     db
-      .select({ id: employees.id, name: employees.name })
+      .select({ id: employees.id, firstName: employees.firstName, lastName: employees.lastName })
+      .from(employees),
+    db
+      .select({ id: employees.id, firstName: employees.firstName, lastName: employees.lastName })
       .from(employees)
       .where(eq(employees.managerId, id)),
   ]);
@@ -58,7 +61,9 @@ export default async function EmployeeDetailPage({ params }: PageProps) {
     allPositions.map((p) => [p.id, p.name]),
   );
   const teamsById = Object.fromEntries(allTeams.map((t) => [t.id, t.name]));
-  const empById = Object.fromEntries(allEmps.map((e) => [e.id, e.name]));
+  const empById = Object.fromEntries(
+    allEmps.map((e) => [e.id, `${e.firstName} ${e.lastName}`.trim()]),
+  );
 
   const roleNames = empRoles.map((er) => rolesById[er.roleId] ?? "");
   const positionNames = empPositions.map(
@@ -75,7 +80,10 @@ export default async function EmployeeDetailPage({ params }: PageProps) {
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-            {emp.name}
+            <FormattedName
+              firstName={emp.firstName}
+              lastName={emp.lastName}
+            />
           </h1>
           {emp.email && (
             <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
@@ -159,7 +167,10 @@ export default async function EmployeeDetailPage({ params }: PageProps) {
                     href={`/employees/${r.id}`}
                     className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
                   >
-                    {r.name}
+                    <FormattedName
+                      firstName={r.firstName}
+                      lastName={r.lastName}
+                    />
                   </Link>
                 </li>
               ))}

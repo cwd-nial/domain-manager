@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { HierarchyTree, type TreeNode } from "@/components/HierarchyTree";
+import { useNameFormat } from "@/lib/nameFormatContext";
 
 function filterNodes(nodes: TreeNode[], query: string): TreeNode[] {
   if (!query.trim()) return nodes;
@@ -19,14 +20,16 @@ function injectEmployeeChildren(nodes: TreeNode[]): TreeNode[] {
   return nodes.map((node) => ({
     ...node,
     children: [
-      ...injectEmployeeChildren(node.children),
       ...(node.memberEmployees ?? []).map((emp) => ({
         id: `emp-${emp.id}`,
-        label: emp.name,
+        label: `${emp.firstName} ${emp.lastName}`.trim(),
+        firstName: emp.firstName,
+        lastName: emp.lastName,
         href: `/employees/${emp.id}`,
         meta: [],
         children: [],
       })),
+      ...injectEmployeeChildren(node.children),
     ],
   }));
 }
@@ -51,6 +54,7 @@ export function HierarchyPanel({
   const [query, setQuery] = useState("");
   const [showEmployees, setShowEmployees] = useState(false);
   const [showTeams, setShowTeams] = useState(false);
+  const [nameFormat] = useNameFormat();
 
   const processed = useMemo(() => {
     let result = filterNodes(nodes, query);
@@ -84,7 +88,7 @@ export function HierarchyPanel({
         {variant === "team" ? "Show employees" : "Show teams"}
       </label>
       <div className="overflow-auto max-h-[70vh]">
-        <HierarchyTree nodes={processed} />
+        <HierarchyTree nodes={processed} nameFormat={nameFormat} />
       </div>
     </div>
   );

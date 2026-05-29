@@ -7,7 +7,7 @@ type TeamNode = {
   name: string;
   description: string | null;
   memberCount: number;
-  members: { id: string; name: string }[];
+  members: { id: string; firstName: string; lastName: string }[];
   children: TeamNode[];
 };
 
@@ -15,16 +15,19 @@ export async function GET() {
   const [allTeams, allEmpTeams, allEmps] = await Promise.all([
     db.select().from(teams),
     db.select().from(employeeTeams),
-    db.select({ id: employees.id, name: employees.name }).from(employees),
+    db.select({ id: employees.id, firstName: employees.firstName, lastName: employees.lastName }).from(employees),
   ]);
 
-  const empById = Object.fromEntries(allEmps.map((e) => [e.id, e.name]));
+  const empById = Object.fromEntries(allEmps.map((e) => [e.id, e]));
 
   const nodes = new Map<string, TeamNode>(
     allTeams.map((t) => {
       const members = allEmpTeams
         .filter((et) => et.teamId === t.id)
-        .map((et) => ({ id: et.employeeId, name: empById[et.employeeId] ?? "" }));
+        .map((et) => {
+          const emp = empById[et.employeeId];
+          return { id: et.employeeId, firstName: emp?.firstName ?? "", lastName: emp?.lastName ?? "" };
+        });
       return [
         t.id,
         {

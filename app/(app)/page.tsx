@@ -42,7 +42,9 @@ async function buildEmployeeTree(): Promise<TreeNode[]> {
       e.id,
       {
         id: e.id,
-        label: e.name,
+        label: `${e.firstName} ${e.lastName}`.trim(),
+        firstName: e.firstName,
+        lastName: e.lastName,
         href: `/employees/${e.id}`,
         meta: [
           ...allEmpRoles
@@ -78,7 +80,7 @@ async function buildTeamTree(): Promise<TreeNode[]> {
     db.select().from(teams),
     db.select().from(employeeTeams),
     db
-      .select({ id: employees.id, name: employees.name })
+      .select({ id: employees.id, firstName: employees.firstName, lastName: employees.lastName })
       .from(employees),
   ]);
 
@@ -89,7 +91,7 @@ async function buildTeamTree(): Promise<TreeNode[]> {
       const memberEmployees = allEmpTeams
         .filter((et) => et.teamId === t.id)
         .map((et) => empById[et.employeeId])
-        .filter(Boolean) as { id: string; name: string }[];
+        .filter(Boolean) as { id: string; firstName: string; lastName: string }[];
 
       return [
         t.id,

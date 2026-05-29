@@ -3,26 +3,36 @@
 import { useState } from "react";
 import Link from "next/link";
 import { teamColorClass } from "@/lib/teamColors";
+import { formatName, type NameFormat } from "@/lib/formatName";
 
 export type TreeNode = {
   id: string;
   label: string;
+  firstName?: string;
+  lastName?: string;
   meta: string[];
   href?: string;
   children: TreeNode[];
-  memberEmployees?: { id: string; name: string }[];
+  memberEmployees?: { id: string; firstName: string; lastName: string }[];
   teamBadges?: { id: string; name: string }[];
 };
 
 function TreeNodeItem({
   node,
   depth = 0,
+  nameFormat = "FL",
 }: {
   node: TreeNode;
   depth?: number;
+  nameFormat?: NameFormat;
 }) {
   const [expanded, setExpanded] = useState(true);
   const hasChildren = node.children.length > 0;
+
+  const displayName =
+    node.firstName !== undefined
+      ? formatName(node.firstName, node.lastName ?? "", nameFormat)
+      : node.label;
 
   return (
     <li>
@@ -47,11 +57,11 @@ function TreeNodeItem({
                 href={node.href}
                 className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline truncate"
               >
-                {node.label}
+                {displayName}
               </Link>
             ) : (
               <span className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
-                {node.label}
+                {displayName}
               </span>
             )}
             {node.teamBadges && node.teamBadges.length > 0 && (
@@ -84,7 +94,12 @@ function TreeNodeItem({
       {hasChildren && expanded && (
         <ul className="border-l border-gray-200 dark:border-gray-700 ml-2 list-none p-0">
           {node.children.map((child) => (
-            <TreeNodeItem key={child.id} node={child} depth={depth + 1} />
+            <TreeNodeItem
+              key={child.id}
+              node={child}
+              depth={depth + 1}
+              nameFormat={nameFormat}
+            />
           ))}
         </ul>
       )}
@@ -92,7 +107,13 @@ function TreeNodeItem({
   );
 }
 
-export function HierarchyTree({ nodes }: { nodes: TreeNode[] }) {
+export function HierarchyTree({
+  nodes,
+  nameFormat = "FL",
+}: {
+  nodes: TreeNode[];
+  nameFormat?: NameFormat;
+}) {
   if (nodes.length === 0) {
     return (
       <p className="text-sm text-gray-400 dark:text-gray-500 italic">
@@ -103,7 +124,7 @@ export function HierarchyTree({ nodes }: { nodes: TreeNode[] }) {
   return (
     <ul className="list-none p-0">
       {nodes.map((node) => (
-        <TreeNodeItem key={node.id} node={node} />
+        <TreeNodeItem key={node.id} node={node} nameFormat={nameFormat} />
       ))}
     </ul>
   );

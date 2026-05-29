@@ -7,7 +7,8 @@ type Item = { id: string; name: string };
 
 type DefaultValues = {
   id?: string;
-  name?: string;
+  firstName?: string;
+  lastName?: string;
   email?: string;
   phone?: string;
   avatarUrl?: string;
@@ -38,28 +39,21 @@ export function EmployeeForm({
   const router = useRouter();
   const isEdit = !!defaultValues.id;
 
-  const [name, setName] = useState(defaultValues.name ?? "");
+  const [firstName, setFirstName] = useState(defaultValues.firstName ?? "");
+  const [lastName, setLastName] = useState(defaultValues.lastName ?? "");
   const [email, setEmail] = useState(defaultValues.email ?? "");
   const [phone, setPhone] = useState(defaultValues.phone ?? "");
   const [avatarUrl, setAvatarUrl] = useState(defaultValues.avatarUrl ?? "");
   const [managerId, setManagerId] = useState(defaultValues.managerId ?? "");
-  const [roleIds, setRoleIds] = useState<string[]>(
-    defaultValues.roleIds ?? [],
-  );
+  const [roleIds, setRoleIds] = useState<string[]>(defaultValues.roleIds ?? []);
   const [positionIds, setPositionIds] = useState<string[]>(
     defaultValues.positionIds ?? [],
   );
-  const [teamIds, setTeamIds] = useState<string[]>(
-    defaultValues.teamIds ?? [],
-  );
+  const [teamIds, setTeamIds] = useState<string[]>(defaultValues.teamIds ?? []);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  function toggle(
-    list: string[],
-    set: (l: string[]) => void,
-    id: string,
-  ) {
+  function toggle(list: string[], set: (l: string[]) => void, id: string) {
     set(list.includes(id) ? list.filter((i) => i !== id) : [...list, id]);
   }
 
@@ -77,7 +71,8 @@ export function EmployeeForm({
       method,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        name,
+        firstName,
+        lastName,
         email: email || null,
         phone: phone || null,
         avatarUrl: avatarUrl || null,
@@ -110,17 +105,29 @@ export function EmployeeForm({
       )}
 
       <div className="space-y-4">
-        <label className="flex flex-col gap-1">
-          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-            Name *
-          </span>
-          <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-            className={inputCls}
-          />
-        </label>
+        <div className="grid grid-cols-2 gap-3">
+          <label className="flex flex-col gap-1">
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              First Name *
+            </span>
+            <input
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              required
+              className={inputCls}
+            />
+          </label>
+          <label className="flex flex-col gap-1">
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              Last Name
+            </span>
+            <input
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              className={inputCls}
+            />
+          </label>
+        </div>
         <label className="flex flex-col gap-1">
           <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
             Email

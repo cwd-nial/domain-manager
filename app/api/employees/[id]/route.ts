@@ -63,10 +63,10 @@ export async function GET(_: Request, { params }: Params) {
     db.select().from(positions),
     db.select().from(teams),
     db
-      .select({ id: employees.id, name: employees.name })
+      .select({ id: employees.id, firstName: employees.firstName, lastName: employees.lastName })
       .from(employees),
     db
-      .select({ id: employees.id, name: employees.name })
+      .select({ id: employees.id, firstName: employees.firstName, lastName: employees.lastName })
       .from(employees)
       .where(eq(employees.managerId, id)),
   ]);
@@ -76,7 +76,9 @@ export async function GET(_: Request, { params }: Params) {
     allPositions.map((p) => [p.id, p.name]),
   );
   const teamsById = Object.fromEntries(allTeams.map((t) => [t.id, t.name]));
-  const empById = Object.fromEntries(allEmps.map((e) => [e.id, e.name]));
+  const empById = Object.fromEntries(
+    allEmps.map((e) => [e.id, `${e.firstName} ${e.lastName}`.trim()]),
+  );
 
   return NextResponse.json({
     ...emp,
@@ -100,11 +102,23 @@ export async function GET(_: Request, { params }: Params) {
 export async function PUT(request: Request, { params }: Params) {
   const { id } = await params;
   const body = await request.json();
-  const { name, email, phone, avatarUrl, managerId, roleIds, positionIds, teamIds } =
-    body;
+  const {
+    firstName,
+    lastName = "",
+    email,
+    phone,
+    avatarUrl,
+    managerId,
+    roleIds,
+    positionIds,
+    teamIds,
+  } = body;
 
-  if (!name?.trim()) {
-    return NextResponse.json({ error: "Name is required" }, { status: 400 });
+  if (!firstName?.trim()) {
+    return NextResponse.json(
+      { error: "First name is required" },
+      { status: 400 },
+    );
   }
 
   if (managerId) {
@@ -125,7 +139,8 @@ export async function PUT(request: Request, { params }: Params) {
   await db
     .update(employees)
     .set({
-      name,
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
       email: email || null,
       phone: phone || null,
       avatarUrl: avatarUrl || null,
@@ -135,15 +150,11 @@ export async function PUT(request: Request, { params }: Params) {
     .where(eq(employees.id, id));
 
   if (roleIds !== undefined) {
-    await db
-      .delete(employeeRoles)
-      .where(eq(employeeRoles.employeeId, id));
+    await db.delete(employeeRoles).where(eq(employeeRoles.employeeId, id));
     if (roleIds.length > 0) {
       await db
         .insert(employeeRoles)
-        .values(
-          roleIds.map((roleId: string) => ({ employeeId: id, roleId })),
-        );
+        .values(roleIds.map((roleId: string) => ({ employeeId: id, roleId })));
     }
   }
 
@@ -162,9 +173,7 @@ export async function PUT(request: Request, { params }: Params) {
   }
 
   if (teamIds !== undefined) {
-    await db
-      .delete(employeeTeams)
-      .where(eq(employeeTeams.employeeId, id));
+    await db.delete(employeeTeams).where(eq(employeeTeams.employeeId, id));
     if (teamIds.length > 0) {
       await db
         .insert(employeeTeams)
