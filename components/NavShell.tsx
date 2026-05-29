@@ -55,7 +55,7 @@ export function NavShell() {
             onClick={toggleFormat}
             className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
           >
-            {format === "FL" ? "First Last" : "Last, First"}
+            {format === "FL" ? "Last, First" : "First Last"}
           </button>
           <button
             onClick={toggleDark}
