@@ -13,19 +13,29 @@ import { HierarchyPanel } from "./HierarchyPanel";
 import type { TreeNode } from "@/components/HierarchyTree";
 
 async function buildEmployeeTree(): Promise<TreeNode[]> {
-  const [allEmps, allEmpRoles, allEmpPositions, allRoles, allPositions] =
-    await Promise.all([
-      db.select().from(employees),
-      db.select().from(employeeRoles),
-      db.select().from(employeePositions),
-      db.select().from(roles),
-      db.select().from(positions),
-    ]);
+  const [
+    allEmps,
+    allEmpRoles,
+    allEmpPositions,
+    allRoles,
+    allPositions,
+    allEmpTeams,
+    allTeams,
+  ] = await Promise.all([
+    db.select().from(employees),
+    db.select().from(employeeRoles),
+    db.select().from(employeePositions),
+    db.select().from(roles),
+    db.select().from(positions),
+    db.select().from(employeeTeams),
+    db.select({ id: teams.id, name: teams.name }).from(teams),
+  ]);
 
   const rolesById = Object.fromEntries(allRoles.map((r) => [r.id, r.name]));
   const positionsById = Object.fromEntries(
     allPositions.map((p) => [p.id, p.name]),
   );
+  const teamsById = Object.fromEntries(allTeams.map((t) => [t.id, t]));
 
   const nodes = new Map<string, TreeNode>(
     allEmps.map((e) => [
@@ -42,6 +52,10 @@ async function buildEmployeeTree(): Promise<TreeNode[]> {
             .filter((ep) => ep.employeeId === e.id)
             .map((ep) => positionsById[ep.positionId] ?? ""),
         ],
+        teamBadges: allEmpTeams
+          .filter((et) => et.employeeId === e.id)
+          .map((et) => teamsById[et.teamId])
+          .filter(Boolean) as { id: string; name: string }[],
         children: [],
       },
     ]),
@@ -68,14 +82,15 @@ async function buildTeamTree(): Promise<TreeNode[]> {
       .from(employees),
   ]);
 
-  const empById = Object.fromEntries(allEmps.map((e) => [e.id, e.name]));
+  const empById = Object.fromEntries(allEmps.map((e) => [e.id, e]));
 
   const nodes = new Map<string, TreeNode>(
     allTeams.map((t) => {
-      const members = allEmpTeams
+      const memberEmployees = allEmpTeams
         .filter((et) => et.teamId === t.id)
-        .map((et) => empById[et.employeeId] ?? "")
-        .filter(Boolean);
+        .map((et) => empById[et.employeeId])
+        .filter(Boolean) as { id: string; name: string }[];
+
       return [
         t.id,
         {
@@ -83,9 +98,12 @@ async function buildTeamTree(): Promise<TreeNode[]> {
           label: t.name,
           href: `/teams/${t.id}`,
           meta:
-            members.length > 0
-              ? [`${members.length} member${members.length !== 1 ? "s" : ""}`]
+            memberEmployees.length > 0
+              ? [
+                  `${memberEmployees.length} member${memberEmployees.length !== 1 ? "s" : ""}`,
+                ]
               : [],
+          memberEmployees,
           children: [],
         },
       ];
@@ -113,19 +131,29 @@ export default async function HomePage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-gray-900">Domain Overview</h1>
+      <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+        Domain Overview
+      </h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <section className="bg-white rounded-lg border border-gray-200 p-5">
-          <h2 className="text-base font-semibold text-gray-800 mb-4">
+        <section className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-5">
+          <h2 className="text-base font-semibold text-gray-800 dark:text-gray-200 mb-4">
             Team Hierarchy
           </h2>
-          <HierarchyPanel nodes={teamTree} placeholder="Search teams…" />
+          <HierarchyPanel
+            nodes={teamTree}
+            variant="team"
+            placeholder="Search teams…"
+          />
         </section>
-        <section className="bg-white rounded-lg border border-gray-200 p-5">
-          <h2 className="text-base font-semibold text-gray-800 mb-4">
+        <section className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-5">
+          <h2 className="text-base font-semibold text-gray-800 dark:text-gray-200 mb-4">
             Employee Hierarchy
           </h2>
-          <HierarchyPanel nodes={empTree} placeholder="Search employees…" />
+          <HierarchyPanel
+            nodes={empTree}
+            variant="employee"
+            placeholder="Search employees…"
+          />
         </section>
       </div>
     </div>

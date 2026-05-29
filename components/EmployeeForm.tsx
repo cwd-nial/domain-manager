@@ -26,7 +26,7 @@ type Props = {
 };
 
 const inputCls =
-  "w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500";
+  "w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500";
 
 export function EmployeeForm({
   roles,
@@ -111,7 +111,9 @@ export function EmployeeForm({
 
       <div className="space-y-4">
         <label className="flex flex-col gap-1">
-          <span className="text-sm font-medium text-gray-700">Name *</span>
+          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            Name *
+          </span>
           <input
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -120,7 +122,9 @@ export function EmployeeForm({
           />
         </label>
         <label className="flex flex-col gap-1">
-          <span className="text-sm font-medium text-gray-700">Email</span>
+          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            Email
+          </span>
           <input
             type="email"
             value={email}
@@ -129,7 +133,9 @@ export function EmployeeForm({
           />
         </label>
         <label className="flex flex-col gap-1">
-          <span className="text-sm font-medium text-gray-700">Phone</span>
+          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            Phone
+          </span>
           <input
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
@@ -137,7 +143,9 @@ export function EmployeeForm({
           />
         </label>
         <label className="flex flex-col gap-1">
-          <span className="text-sm font-medium text-gray-700">Avatar URL</span>
+          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            Avatar URL
+          </span>
           <input
             value={avatarUrl}
             onChange={(e) => setAvatarUrl(e.target.value)}
@@ -145,7 +153,9 @@ export function EmployeeForm({
           />
         </label>
         <label className="flex flex-col gap-1">
-          <span className="text-sm font-medium text-gray-700">Manager</span>
+          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            Manager
+          </span>
           <select
             value={managerId}
             onChange={(e) => setManagerId(e.target.value)}
@@ -191,7 +201,7 @@ export function EmployeeForm({
         <button
           type="button"
           onClick={() => router.back()}
-          className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+          className="rounded-md border border-gray-300 dark:border-gray-600 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
         >
           Cancel
         </button>
@@ -213,10 +223,15 @@ function CheckboxGroup({
 }) {
   return (
     <fieldset>
-      <legend className="text-sm font-medium text-gray-700 mb-2">{label}</legend>
+      <legend className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        {label}
+      </legend>
       <div className="flex flex-wrap gap-3">
         {items.map((item) => (
-          <label key={item.id} className="flex items-center gap-1.5 text-sm cursor-pointer">
+          <label
+            key={item.id}
+            className="flex items-center gap-1.5 text-sm text-gray-700 dark:text-gray-300 cursor-pointer"
+          >
             <input
               type="checkbox"
               checked={selected.includes(item.id)}

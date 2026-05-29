@@ -74,15 +74,19 @@ export default async function EmployeeDetailPage({ params }: PageProps) {
     <div className="space-y-6 max-w-2xl">
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">{emp.name}</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+            {emp.name}
+          </h1>
           {emp.email && (
-            <p className="text-sm text-gray-500 mt-0.5">{emp.email}</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+              {emp.email}
+            </p>
           )}
         </div>
         <div className="flex gap-2">
           <Link
             href={`/employees/${id}/edit`}
-            className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+            className="rounded-md border border-gray-300 dark:border-gray-600 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
           >
             Edit
           </Link>
@@ -94,36 +98,38 @@ export default async function EmployeeDetailPage({ params }: PageProps) {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg border border-gray-200 divide-y divide-gray-100">
+      <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 divide-y divide-gray-100 dark:divide-gray-700">
         {emp.phone && (
           <Row label="Phone">
-            <span className="text-sm text-gray-700">{emp.phone}</span>
+            <span className="text-sm text-gray-700 dark:text-gray-300">
+              {emp.phone}
+            </span>
           </Row>
         )}
         <Row label="Manager">
           {emp.managerId && managerName ? (
             <Link
               href={`/employees/${emp.managerId}`}
-              className="text-sm text-blue-600 hover:underline"
+              className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
             >
               {managerName}
             </Link>
           ) : (
-            <span className="text-sm text-gray-400">—</span>
+            <span className="text-sm text-gray-400 dark:text-gray-500">—</span>
           )}
         </Row>
         <Row label="Roles">
           {roleNames.length > 0 ? (
             <BadgeGroup items={roleNames} variant="role" />
           ) : (
-            <span className="text-sm text-gray-400">—</span>
+            <span className="text-sm text-gray-400 dark:text-gray-500">—</span>
           )}
         </Row>
         <Row label="Positions">
           {positionNames.length > 0 ? (
             <BadgeGroup items={positionNames} variant="position" />
           ) : (
-            <span className="text-sm text-gray-400">—</span>
+            <span className="text-sm text-gray-400 dark:text-gray-500">—</span>
           )}
         </Row>
         <Row label="Teams">
@@ -133,7 +139,7 @@ export default async function EmployeeDetailPage({ params }: PageProps) {
                 <li key={t.id}>
                   <Link
                     href={`/teams/${t.id}`}
-                    className="text-sm text-blue-600 hover:underline"
+                    className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
                   >
                     {t.name}
                   </Link>
@@ -141,7 +147,7 @@ export default async function EmployeeDetailPage({ params }: PageProps) {
               ))}
             </ul>
           ) : (
-            <span className="text-sm text-gray-400">—</span>
+            <span className="text-sm text-gray-400 dark:text-gray-500">—</span>
           )}
         </Row>
         {reports.length > 0 && (
@@ -151,7 +157,7 @@ export default async function EmployeeDetailPage({ params }: PageProps) {
                 <li key={r.id}>
                   <Link
                     href={`/employees/${r.id}`}
-                    className="text-sm text-blue-600 hover:underline"
+                    className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
                   >
                     {r.name}
                   </Link>
@@ -162,7 +168,10 @@ export default async function EmployeeDetailPage({ params }: PageProps) {
         )}
       </div>
 
-      <Link href="/employees" className="text-sm text-gray-500 hover:underline">
+      <Link
+        href="/employees"
+        className="text-sm text-gray-500 dark:text-gray-400 hover:underline"
+      >
         ← Back to Employees
       </Link>
     </div>
@@ -178,7 +187,7 @@ function Row({
 }) {
   return (
     <div className="flex gap-4 px-4 py-3">
-      <span className="w-28 flex-shrink-0 text-sm font-medium text-gray-500">
+      <span className="w-28 flex-shrink-0 text-sm font-medium text-gray-500 dark:text-gray-400">
         {label}
       </span>
       <div className="flex-1">{children}</div>

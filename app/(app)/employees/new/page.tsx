@@ -16,7 +16,7 @@ export default async function NewEmployeePage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-gray-900">New Employee</h1>
+      <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">New Employee</h1>
       <EmployeeForm
         roles={allRoles}
         positions={allPositions}

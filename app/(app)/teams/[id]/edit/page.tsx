@@ -18,7 +18,7 @@ export default async function EditTeamPage({ params }: PageProps) {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-gray-900">Edit — {team.name}</h1>
+      <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Edit — {team.name}</h1>
       <TeamForm
         teams={allTeams}
         defaultValues={{

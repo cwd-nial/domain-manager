@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { teamColorClass } from "@/lib/teamColors";
 
 export type TreeNode = {
   id: string;
@@ -9,6 +10,8 @@ export type TreeNode = {
   meta: string[];
   href?: string;
   children: TreeNode[];
+  memberEmployees?: { id: string; name: string }[];
+  teamBadges?: { id: string; name: string }[];
 };
 
 function TreeNodeItem({
@@ -29,7 +32,7 @@ function TreeNodeItem({
         {hasChildren ? (
           <button
             onClick={() => setExpanded(!expanded)}
-            className="mt-0.5 w-4 h-4 flex-shrink-0 text-gray-400 hover:text-gray-600 text-xs"
+            className="mt-0.5 w-4 h-4 flex-shrink-0 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 text-xs"
             aria-label={expanded ? "Collapse" : "Expand"}
           >
             {expanded ? "▾" : "▸"}
@@ -38,24 +41,38 @@ function TreeNodeItem({
           <span className="w-4 h-4 flex-shrink-0" />
         )}
         <div className="flex flex-col gap-0.5 min-w-0">
-          {node.href ? (
-            <Link
-              href={node.href}
-              className="text-sm font-medium text-blue-600 hover:underline truncate"
-            >
-              {node.label}
-            </Link>
-          ) : (
-            <span className="text-sm font-medium text-gray-900 truncate">
-              {node.label}
-            </span>
-          )}
+          <div className="flex flex-wrap items-center gap-1.5">
+            {node.href ? (
+              <Link
+                href={node.href}
+                className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline truncate"
+              >
+                {node.label}
+              </Link>
+            ) : (
+              <span className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                {node.label}
+              </span>
+            )}
+            {node.teamBadges && node.teamBadges.length > 0 && (
+              <>
+                {node.teamBadges.map((badge) => (
+                  <span
+                    key={badge.id}
+                    className={`px-1.5 py-0.5 rounded text-xs font-medium ${teamColorClass(badge.id)}`}
+                  >
+                    {badge.name}
+                  </span>
+                ))}
+              </>
+            )}
+          </div>
           {node.meta.length > 0 && (
             <ul className="flex flex-wrap gap-1 list-none p-0 m-0">
               {node.meta.map((m) => (
                 <li
                   key={m}
-                  className="px-1.5 py-0.5 rounded text-xs bg-gray-100 text-gray-600"
+                  className="px-1.5 py-0.5 rounded text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
                 >
                   {m}
                 </li>
@@ -65,7 +82,7 @@ function TreeNodeItem({
         </div>
       </div>
       {hasChildren && expanded && (
-        <ul className="border-l border-gray-200 ml-2 list-none p-0">
+        <ul className="border-l border-gray-200 dark:border-gray-700 ml-2 list-none p-0">
           {node.children.map((child) => (
             <TreeNodeItem key={child.id} node={child} depth={depth + 1} />
           ))}
@@ -77,7 +94,11 @@ function TreeNodeItem({
 
 export function HierarchyTree({ nodes }: { nodes: TreeNode[] }) {
   if (nodes.length === 0) {
-    return <p className="text-sm text-gray-400 italic">No entries</p>;
+    return (
+      <p className="text-sm text-gray-400 dark:text-gray-500 italic">
+        No entries
+      </p>
+    );
   }
   return (
     <ul className="list-none p-0">

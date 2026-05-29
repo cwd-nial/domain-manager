@@ -18,7 +18,7 @@ type Props = {
 };
 
 const inputCls =
-  "w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500";
+  "w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500";
 
 export function TeamForm({ teams, defaultValues = {} }: Props) {
   const router = useRouter();
@@ -73,7 +73,9 @@ export function TeamForm({ teams, defaultValues = {} }: Props) {
 
       <div className="space-y-4">
         <label className="flex flex-col gap-1">
-          <span className="text-sm font-medium text-gray-700">Name *</span>
+          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            Name *
+          </span>
           <input
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -82,7 +84,9 @@ export function TeamForm({ teams, defaultValues = {} }: Props) {
           />
         </label>
         <label className="flex flex-col gap-1">
-          <span className="text-sm font-medium text-gray-700">Description</span>
+          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            Description
+          </span>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
@@ -91,7 +95,9 @@ export function TeamForm({ teams, defaultValues = {} }: Props) {
           />
         </label>
         <label className="flex flex-col gap-1">
-          <span className="text-sm font-medium text-gray-700">Parent Team</span>
+          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            Parent Team
+          </span>
           <select
             value={parentId}
             onChange={(e) => setParentId(e.target.value)}
@@ -118,7 +124,7 @@ export function TeamForm({ teams, defaultValues = {} }: Props) {
         <button
           type="button"
           onClick={() => router.back()}
-          className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+          className="rounded-md border border-gray-300 dark:border-gray-600 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
         >
           Cancel
         </button>
