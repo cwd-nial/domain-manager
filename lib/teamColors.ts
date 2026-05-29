@@ -9,6 +9,13 @@ export const TEAM_COLOR_CLASSES: readonly string[] = [
   "bg-purple-100 text-purple-800 ring-1 ring-purple-200 dark:bg-purple-900 dark:text-purple-200 dark:ring-purple-700",
 ];
 
+// Per-team overrides for teams that collide in the hash palette or need a reserved color.
+const TEAM_COLOR_OVERRIDES: Record<string, string> = {
+  // "Purchase Domain" collides with "Checkout" (both hash to purple) — use orange instead.
+  "a93723ed-aded-4a28-8866-ed58e05439bb":
+    "bg-orange-100 text-orange-800 ring-1 ring-orange-200 dark:bg-orange-900 dark:text-orange-200 dark:ring-orange-700",
+};
+
 function simpleHash(s: string): number {
   let h = 0;
   for (let i = 0; i < s.length; i++) {
@@ -18,5 +25,8 @@ function simpleHash(s: string): number {
 }
 
 export function teamColorClass(teamId: string): string {
-  return TEAM_COLOR_CLASSES[simpleHash(teamId) % TEAM_COLOR_CLASSES.length];
+  return (
+    TEAM_COLOR_OVERRIDES[teamId] ??
+    TEAM_COLOR_CLASSES[simpleHash(teamId) % TEAM_COLOR_CLASSES.length]
+  );
 }
