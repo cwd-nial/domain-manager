@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { eq } from "drizzle-orm";
+import { requireAuth } from "@/lib/session";
 import { db } from "@/lib/db";
 import { teams } from "@/drizzle/schema";
 import { TeamForm } from "@/components/TeamForm";
@@ -7,6 +8,7 @@ import { TeamForm } from "@/components/TeamForm";
 type PageProps = { params: Promise<{ id: string }> };
 
 export default async function EditTeamPage({ params }: PageProps) {
+  await requireAuth();
   const { id } = await params;
 
   const [team] = await db.select().from(teams).where(eq(teams.id, id));

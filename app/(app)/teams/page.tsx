@@ -1,8 +1,10 @@
 import Link from "next/link";
+import { requireAuth } from "@/lib/session";
 import { db } from "@/lib/db";
 import { teams, employeeTeams } from "@/drizzle/schema";
 
 export default async function TeamsPage() {
+  await requireAuth();
   const [allTeams, allEmpTeams] = await Promise.all([
     db.select().from(teams),
     db.select().from(employeeTeams),

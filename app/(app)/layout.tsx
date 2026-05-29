@@ -1,15 +1,10 @@
-import { redirect } from "next/navigation";
-import { headers } from "next/headers";
-import { auth } from "@/lib/auth";
 import { NavShell } from "@/components/NavShell";
 
-export default async function AppLayout({
+export default function AppLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const session = await auth.api.getSession({ headers: await headers() });
-  if (!session) redirect("/login");
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       <NavShell />

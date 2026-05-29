@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { eq } from "drizzle-orm";
+import { requireAuth } from "@/lib/session";
 import { db } from "@/lib/db";
 import {
   employees,
@@ -17,6 +18,7 @@ import { DeleteButton } from "@/components/DeleteButton";
 type PageProps = { params: Promise<{ id: string }> };
 
 export default async function EmployeeDetailPage({ params }: PageProps) {
+  await requireAuth();
   const { id } = await params;
 
   const [emp] = await db

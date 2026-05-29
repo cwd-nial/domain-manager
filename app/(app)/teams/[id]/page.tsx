@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { eq } from "drizzle-orm";
+import { requireAuth } from "@/lib/session";
 import { db } from "@/lib/db";
 import { teams, employeeTeams, employees } from "@/drizzle/schema";
 import { DeleteButton } from "@/components/DeleteButton";
@@ -8,6 +9,7 @@ import { DeleteButton } from "@/components/DeleteButton";
 type PageProps = { params: Promise<{ id: string }> };
 
 export default async function TeamDetailPage({ params }: PageProps) {
+  await requireAuth();
   const { id } = await params;
 
   const [team] = await db.select().from(teams).where(eq(teams.id, id));

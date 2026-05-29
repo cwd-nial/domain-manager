@@ -1,3 +1,4 @@
+import { requireAuth } from "@/lib/session";
 import { db } from "@/lib/db";
 import {
   employees,
@@ -104,6 +105,7 @@ async function buildTeamTree(): Promise<TreeNode[]> {
 }
 
 export default async function HomePage() {
+  await requireAuth();
   const [empTree, teamTree] = await Promise.all([
     buildEmployeeTree(),
     buildTeamTree(),

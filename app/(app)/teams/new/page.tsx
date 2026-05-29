@@ -1,8 +1,10 @@
+import { requireAuth } from "@/lib/session";
 import { db } from "@/lib/db";
 import { teams } from "@/drizzle/schema";
 import { TeamForm } from "@/components/TeamForm";
 
 export default async function NewTeamPage() {
+  await requireAuth();
   const allTeams = await db.select().from(teams);
 
   return (

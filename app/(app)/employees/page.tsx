@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { requireAuth } from "@/lib/session";
 import { db } from "@/lib/db";
 import {
   employees,
@@ -10,6 +11,7 @@ import {
 import { BadgeGroup } from "@/components/BadgeGroup";
 
 export default async function EmployeesPage() {
+  await requireAuth();
   const [allEmps, allEmpRoles, allEmpPositions, allRoles, allPositions] =
     await Promise.all([
       db.select().from(employees),
