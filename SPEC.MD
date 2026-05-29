@@ -72,7 +72,7 @@ id    TEXT PK
 name  TEXT UNIQUE NOT NULL
 ```
 
-Values: `Frontend developer`, `Backend developer`, `Fullstack developer`, `QA engineer`, `Product Owner`, `UX designer`
+Values: `Frontend developer`, `Backend developer`, `Fullstack developer`, `DevOps`, `QA engineer`, `Product Owner`, `UX designer`
 
 **`positions`** — seeded from fixed list
 ```

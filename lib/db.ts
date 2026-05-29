@@ -136,6 +136,7 @@ const ROLES = [
   { id: "role_frontend_dev", name: "Frontend developer" },
   { id: "role_backend_dev", name: "Backend developer" },
   { id: "role_fullstack_dev", name: "Fullstack developer" },
+  { id: "role_dev_ops", name: "DevOps" },
   { id: "role_qa_engineer", name: "QA engineer" },
   { id: "role_product_owner", name: "Product Owner" },
   { id: "role_ux_designer", name: "UX designer" },
