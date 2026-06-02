@@ -7,6 +7,7 @@ import {
   roles,
   positions,
 } from "@/drizzle/schema";
+import { getSession } from "@/lib/session";
 
 type EmployeeNode = {
   id: string;
@@ -19,6 +20,9 @@ type EmployeeNode = {
 };
 
 export async function GET() {
+  const session = await getSession();
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
   const [allEmps, allEmpRoles, allEmpPositions, allRoles, allPositions] =
     await Promise.all([
       db.select().from(employees),

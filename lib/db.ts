@@ -7,6 +7,7 @@ const client = createClient({
 });
 
 await client.execute({ sql: "PRAGMA journal_mode = WAL", args: [] });
+await client.execute({ sql: "PRAGMA foreign_keys = ON", args: [] });
 
 // Create all tables on first run
 await client.batch([

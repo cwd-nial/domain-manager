@@ -7,3 +7,7 @@ export async function requireAuth() {
   if (!session) redirect("/login");
   return session;
 }
+
+export async function getSession() {
+  return auth.api.getSession({ headers: await headers() });
+}

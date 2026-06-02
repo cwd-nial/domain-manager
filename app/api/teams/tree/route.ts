@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { teams, employeeTeams, employees } from "@/drizzle/schema";
+import { getSession } from "@/lib/session";
 
 type TeamNode = {
   id: string;
@@ -12,6 +13,9 @@ type TeamNode = {
 };
 
 export async function GET() {
+  const session = await getSession();
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
   const [allTeams, allEmpTeams, allEmps] = await Promise.all([
     db.select().from(teams),
     db.select().from(employeeTeams),

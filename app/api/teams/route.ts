@@ -1,8 +1,11 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { teams, employeeTeams } from "@/drizzle/schema";
+import { getSession } from "@/lib/session";
 
 export async function GET() {
+  const session = await getSession();
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const [allTeams, allEmpTeams] = await Promise.all([
     db.select().from(teams),
     db.select().from(employeeTeams),
@@ -19,6 +22,9 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const session = await getSession();
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
   const body = await request.json();
   const { name, description, parentId } = body;
 

@@ -10,6 +10,7 @@ import {
   positions,
   teams,
 } from "@/drizzle/schema";
+import { getSession } from "@/lib/session";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -29,6 +30,9 @@ function wouldCreateCycle(
 }
 
 export async function GET(_: Request, { params }: Params) {
+  const session = await getSession();
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
   const { id } = await params;
 
   const [emp] = await db
@@ -100,6 +104,9 @@ export async function GET(_: Request, { params }: Params) {
 }
 
 export async function PUT(request: Request, { params }: Params) {
+  const session = await getSession();
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
   const { id } = await params;
   const body = await request.json();
   const {
@@ -187,6 +194,9 @@ export async function PUT(request: Request, { params }: Params) {
 }
 
 export async function DELETE(_: Request, { params }: Params) {
+  const session = await getSession();
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
   const { id } = await params;
 
   const [report] = await db

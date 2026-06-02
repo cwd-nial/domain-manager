@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { teams, employeeTeams, employees } from "@/drizzle/schema";
+import { getSession } from "@/lib/session";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -21,6 +22,9 @@ function wouldCreateCycle(
 }
 
 export async function GET(_: Request, { params }: Params) {
+  const session = await getSession();
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
   const { id } = await params;
 
   const [team] = await db.select().from(teams).where(eq(teams.id, id));
@@ -41,6 +45,9 @@ export async function GET(_: Request, { params }: Params) {
 }
 
 export async function PUT(request: Request, { params }: Params) {
+  const session = await getSession();
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
   const { id } = await params;
   const body = await request.json();
   const { name, description, parentId } = body;
@@ -78,6 +85,9 @@ export async function PUT(request: Request, { params }: Params) {
 }
 
 export async function DELETE(_: Request, { params }: Params) {
+  const session = await getSession();
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
   const { id } = await params;
 
   const [subTeam] = await db
