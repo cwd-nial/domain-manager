@@ -3,7 +3,7 @@
 We're building the app described in @SPEC.MD. Read that file for general architecture tasks or to double-check the
 exact database structure, tech stack or application architecture.
 
-Keep your replies extremely concise and focus on conveying the key information. No unnecessary fluff, no long 
+Keep your replies extremely concise and focus on conveying the key information. No unnecessary fluff, no long
 code snippets.
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
@@ -35,11 +35,13 @@ npm run lint       # Run ESLint directly (next lint was removed in v16)
 These differ from training data — read `node_modules/next/dist/docs/` for authoritative detail.
 
 **Async Request APIs** — `cookies()`, `headers()`, `draftMode()`, `params`, and `searchParams` are async-only. Always `await` them:
+
 ```tsx
-export default async function Page({ params }: PageProps<'/blog/[slug]'>) {
-  const { slug } = await params
+export default async function Page({ params }: PageProps<"/blog/[slug]">) {
+    const { slug } = await params;
 }
 ```
+
 Run `npx next typegen` to generate `PageProps`/`LayoutProps`/`RouteContext` type helpers.
 
 **`middleware` → `proxy`** — rename `middleware.ts` to `proxy.ts` and the named export from `middleware` to `proxy`. The edge runtime is not supported in `proxy` (Node.js only).
@@ -47,6 +49,7 @@ Run `npx next typegen` to generate `PageProps`/`LayoutProps`/`RouteContext` type
 **Linting** — `next lint` is removed; `next build` no longer lints. Use `eslint` or `biome` directly. ESLint Flat Config (`eslint.config.mjs`) is the default.
 
 **Caching APIs**
+
 - `revalidateTag(tag, cacheLifeProfile)` now requires a second argument
 - Use `updateTag` (Server Actions only) for read-your-writes/immediate refresh
 - Use `refresh()` from `next/cache` to refresh the client router from a Server Action
