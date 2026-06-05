@@ -42,7 +42,7 @@ export function NavShell() {
                                 href={href}
                                 className={`text-sm ${
                                     active
-                                        ? "text-blue-600 dark:text-blue-400 font-medium"
+                                        ? "text-blue-600 dark:text-teal-400 font-medium"
                                         : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
                                 }`}
                             >

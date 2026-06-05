@@ -64,7 +64,7 @@ export default async function TeamDetailPage({ params }: PageProps) {
                     <Row label="Parent Team">
                         <Link
                             href={`/teams/${team.parentId}`}
-                            className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
+                            className="text-sm text-blue-600 dark:text-teal-400 hover:underline"
                         >
                             {parentName ?? team.parentId}
                         </Link>
@@ -77,7 +77,7 @@ export default async function TeamDetailPage({ params }: PageProps) {
                                 <li key={m.id} className="flex items-center gap-2">
                                     <Link
                                         href={`/employees/${m.id}`}
-                                        className="text-sm text-blue-600 dark:text-blue-400 hover:underline font-medium"
+                                        className="text-sm text-blue-600 dark:text-teal-400 hover:underline font-medium"
                                     >
                                         {`${m.firstName} ${m.lastName}`.trim()}
                                     </Link>
@@ -100,7 +100,7 @@ export default async function TeamDetailPage({ params }: PageProps) {
                                 <li key={s.id}>
                                     <Link
                                         href={`/teams/${s.id}`}
-                                        className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
+                                        className="text-sm text-blue-600 dark:text-teal-400 hover:underline"
                                     >
                                         {s.name}
                                     </Link>

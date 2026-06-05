@@ -106,7 +106,7 @@ export default async function EmployeeDetailPage({ params }: PageProps) {
                     {emp.managerId && managerName ? (
                         <Link
                             href={`/employees/${emp.managerId}`}
-                            className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
+                            className="text-sm text-blue-600 dark:text-teal-400 hover:underline"
                         >
                             {managerName}
                         </Link>
@@ -135,7 +135,7 @@ export default async function EmployeeDetailPage({ params }: PageProps) {
                                 <li key={t.id}>
                                     <Link
                                         href={`/teams/${t.id}`}
-                                        className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
+                                        className="text-sm text-blue-600 dark:text-teal-400 hover:underline"
                                     >
                                         {t.name}
                                     </Link>
@@ -153,7 +153,7 @@ export default async function EmployeeDetailPage({ params }: PageProps) {
                                 <li key={r.id}>
                                     <Link
                                         href={`/employees/${r.id}`}
-                                        className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
+                                        className="text-sm text-blue-600 dark:text-teal-400 hover:underline"
                                     >
                                         <FormattedName
                                             firstName={r.firstName}

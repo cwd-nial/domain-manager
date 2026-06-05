@@ -54,7 +54,7 @@ function TreeNodeItem({
                         {node.href ? (
                             <Link
                                 href={node.href}
-                                className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline truncate"
+                                className="text-sm font-medium text-blue-600 dark:text-teal-400 hover:underline truncate"
                             >
                                 {displayName}
                             </Link>

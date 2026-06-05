@@ -65,7 +65,7 @@ export default function LoginPage() {
                             onChange={(e) => setEmail(e.target.value)}
                             required
                             autoComplete="email"
-                            className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-teal-500"
                         />
                     </div>
                     <div className="flex flex-col gap-1">
@@ -79,7 +79,7 @@ export default function LoginPage() {
                             onChange={(e) => setPassword(e.target.value)}
                             required
                             autoComplete={isSignUp ? "new-password" : "current-password"}
-                            className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-teal-500"
                         />
                     </div>
                     {isSignUp && (
@@ -94,7 +94,7 @@ export default function LoginPage() {
                                 onChange={(e) => setConfirmPassword(e.target.value)}
                                 required
                                 autoComplete="new-password"
-                                className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-teal-500"
                             />
                         </div>
                     )}
@@ -102,7 +102,7 @@ export default function LoginPage() {
                     <button
                         type="submit"
                         disabled={pending}
-                        className="mt-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white text-sm font-medium px-4 py-2 rounded-md transition-colors"
+                        className="mt-2 bg-blue-600 dark:bg-teal-600 hover:bg-blue-700 dark:hover:bg-teal-700 disabled:opacity-50 text-white text-sm font-medium px-4 py-2 rounded-md transition-colors"
                     >
                         {pending
                             ? isSignUp
@@ -119,7 +119,7 @@ export default function LoginPage() {
                             Already have an account?{" "}
                             <button
                                 onClick={() => switchMode("signin")}
-                                className="text-blue-600 hover:underline"
+                                className="text-blue-600 dark:text-teal-400 hover:underline"
                             >
                                 Sign in
                             </button>
@@ -129,7 +129,7 @@ export default function LoginPage() {
                             Don&apos;t have an account?{" "}
                             <button
                                 onClick={() => switchMode("signup")}
-                                className="text-blue-600 hover:underline"
+                                className="text-blue-600 dark:text-teal-400 hover:underline"
                             >
                                 Sign up
                             </button>

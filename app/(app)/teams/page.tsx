@@ -27,7 +27,7 @@ export default async function TeamsPage() {
                 <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Teams</h1>
                 <Link
                     href="/teams/new"
-                    className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+                    className="rounded-md bg-blue-600 dark:bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 dark:hover:bg-teal-700"
                 >
                     + New Team
                 </Link>
@@ -57,7 +57,7 @@ export default async function TeamsPage() {
                                     No teams yet —{" "}
                                     <Link
                                         href="/teams/new"
-                                        className="text-blue-600 dark:text-blue-400 hover:underline"
+                                        className="text-blue-600 dark:text-teal-400 hover:underline"
                                     >
                                         add one
                                     </Link>
@@ -69,7 +69,7 @@ export default async function TeamsPage() {
                                     <td className="px-4 py-3">
                                         <Link
                                             href={`/teams/${t.id}`}
-                                            className="font-medium text-blue-600 dark:text-blue-400 hover:underline"
+                                            className="font-medium text-blue-600 dark:text-teal-400 hover:underline"
                                         >
                                             {t.name}
                                         </Link>

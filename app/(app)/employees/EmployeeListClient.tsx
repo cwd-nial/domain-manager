@@ -71,7 +71,7 @@ export function EmployeeListClient({ employees }: { employees: Employee[] }) {
                                 No employees yet —{" "}
                                 <Link
                                     href="/employees/new"
-                                    className="text-blue-600 dark:text-blue-400 hover:underline"
+                                    className="text-blue-600 dark:text-teal-400 hover:underline"
                                 >
                                     add one
                                 </Link>
@@ -83,7 +83,7 @@ export function EmployeeListClient({ employees }: { employees: Employee[] }) {
                                 <td className="px-4 py-3">
                                     <Link
                                         href={`/employees/${emp.id}`}
-                                        className="font-medium text-blue-600 dark:text-blue-400 hover:underline"
+                                        className="font-medium text-blue-600 dark:text-teal-400 hover:underline"
                                     >
                                         {formatName(emp.firstName, emp.lastName, format)}
                                     </Link>

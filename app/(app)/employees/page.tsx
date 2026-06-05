@@ -38,7 +38,7 @@ export default async function EmployeesPage() {
                 <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Employees</h1>
                 <Link
                     href="/employees/new"
-                    className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+                    className="rounded-md bg-blue-600 dark:bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 dark:hover:bg-teal-700"
                 >
                     + New Employee
                 </Link>
