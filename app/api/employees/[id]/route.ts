@@ -125,48 +125,50 @@ export async function PUT(request: Request, { params }: Params) {
         }
     }
 
-    await db
-        .update(employees)
-        .set({
-            firstName: firstName.trim(),
-            lastName: lastName.trim(),
-            email: email || null,
-            phone: phone || null,
-            avatarUrl: avatarUrl || null,
-            managerId: managerId || null,
-            updatedAt: new Date(),
-        })
-        .where(eq(employees.id, id));
+    await db.transaction(async (tx) => {
+        await tx
+            .update(employees)
+            .set({
+                firstName: firstName.trim(),
+                lastName: lastName.trim(),
+                email: email || null,
+                phone: phone || null,
+                avatarUrl: avatarUrl || null,
+                managerId: managerId || null,
+                updatedAt: new Date(),
+            })
+            .where(eq(employees.id, id));
 
-    if (roleIds !== undefined) {
-        await db.delete(employeeRoles).where(eq(employeeRoles.employeeId, id));
-        if (roleIds.length > 0) {
-            await db
-                .insert(employeeRoles)
-                .values(roleIds.map((roleId: string) => ({ employeeId: id, roleId })));
+        if (roleIds !== undefined) {
+            await tx.delete(employeeRoles).where(eq(employeeRoles.employeeId, id));
+            if (roleIds.length > 0) {
+                await tx
+                    .insert(employeeRoles)
+                    .values(roleIds.map((roleId: string) => ({ employeeId: id, roleId })));
+            }
         }
-    }
 
-    if (positionIds !== undefined) {
-        await db.delete(employeePositions).where(eq(employeePositions.employeeId, id));
-        if (positionIds.length > 0) {
-            await db.insert(employeePositions).values(
-                positionIds.map((positionId: string) => ({
-                    employeeId: id,
-                    positionId,
-                })),
-            );
+        if (positionIds !== undefined) {
+            await tx.delete(employeePositions).where(eq(employeePositions.employeeId, id));
+            if (positionIds.length > 0) {
+                await tx.insert(employeePositions).values(
+                    positionIds.map((positionId: string) => ({
+                        employeeId: id,
+                        positionId,
+                    })),
+                );
+            }
         }
-    }
 
-    if (teamIds !== undefined) {
-        await db.delete(employeeTeams).where(eq(employeeTeams.employeeId, id));
-        if (teamIds.length > 0) {
-            await db
-                .insert(employeeTeams)
-                .values(teamIds.map((teamId: string) => ({ employeeId: id, teamId })));
+        if (teamIds !== undefined) {
+            await tx.delete(employeeTeams).where(eq(employeeTeams.employeeId, id));
+            if (teamIds.length > 0) {
+                await tx
+                    .insert(employeeTeams)
+                    .values(teamIds.map((teamId: string) => ({ employeeId: id, teamId })));
+            }
         }
-    }
+    });
 
     return NextResponse.json({ success: true });
 }

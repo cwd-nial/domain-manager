@@ -78,33 +78,35 @@ export async function POST(request: Request) {
     const id = crypto.randomUUID();
     const now = new Date();
 
-    await db.insert(employees).values({
-        id,
-        firstName: firstName.trim(),
-        lastName: lastName.trim(),
-        email: email || null,
-        phone: phone || null,
-        avatarUrl: avatarUrl || null,
-        managerId: managerId || null,
-        createdAt: now,
-        updatedAt: now,
-    });
+    await db.transaction(async (tx) => {
+        await tx.insert(employees).values({
+            id,
+            firstName: firstName.trim(),
+            lastName: lastName.trim(),
+            email: email || null,
+            phone: phone || null,
+            avatarUrl: avatarUrl || null,
+            managerId: managerId || null,
+            createdAt: now,
+            updatedAt: now,
+        });
 
-    if (roleIds.length > 0) {
-        await db
-            .insert(employeeRoles)
-            .values(roleIds.map((roleId: string) => ({ employeeId: id, roleId })));
-    }
-    if (positionIds.length > 0) {
-        await db
-            .insert(employeePositions)
-            .values(positionIds.map((positionId: string) => ({ employeeId: id, positionId })));
-    }
-    if (teamIds.length > 0) {
-        await db
-            .insert(employeeTeams)
-            .values(teamIds.map((teamId: string) => ({ employeeId: id, teamId })));
-    }
+        if (roleIds.length > 0) {
+            await tx
+                .insert(employeeRoles)
+                .values(roleIds.map((roleId: string) => ({ employeeId: id, roleId })));
+        }
+        if (positionIds.length > 0) {
+            await tx
+                .insert(employeePositions)
+                .values(positionIds.map((positionId: string) => ({ employeeId: id, positionId })));
+        }
+        if (teamIds.length > 0) {
+            await tx
+                .insert(employeeTeams)
+                .values(teamIds.map((teamId: string) => ({ employeeId: id, teamId })));
+        }
+    });
 
     return NextResponse.json({ id }, { status: 201 });
 }

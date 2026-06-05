@@ -13,7 +13,7 @@
     "dependencies": {
         "@libsql/client": "^0.17.3",
         "@oxfmt/binding-win32-x64-msvc": "^0.53.0",
-        "better-auth": "^1.4.3",
+        "better-auth": "1.4.3",
         "drizzle-orm": "^0.45.2",
         "next": "^16.2.7",
         "react": "19.2.4",
