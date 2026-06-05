@@ -136,13 +136,13 @@ await client.batch([
 // ── Seed static lookup tables ─────────────────────────────────────────────────
 
 const ROLES = [
-    { id: "role_frontend_dev", name: "Frontend developer" },
-    { id: "role_backend_dev", name: "Backend developer" },
+    { id: "role_frontend_dev", name: "FE Developer" },
+    { id: "role_backend_dev", name: "BE developer" },
     { id: "role_fullstack_dev", name: "Fullstack developer" },
     { id: "role_dev_ops", name: "DevOps" },
-    { id: "role_qa_engineer", name: "QA engineer" },
-    { id: "role_product_owner", name: "Product Owner" },
-    { id: "role_ux_designer", name: "UX designer" },
+    { id: "role_qa", name: "QA" },
+    { id: "role_po", name: "PO" },
+    { id: "role_ux", name: "UX" },
 ] as const;
 
 const POSITIONS = [
@@ -150,10 +150,10 @@ const POSITIONS = [
     { id: "pos_solution_architect", name: "Solution Architect" },
     { id: "pos_team_lead", name: "Team Lead" },
     { id: "pos_engineering_lead", name: "Engineering Lead" },
-    { id: "pos_developer", name: "Developer" },
-    { id: "pos_po", name: "PO" },
-    { id: "pos_qa", name: "QA" },
-    { id: "pos_ux", name: "UX" },
+    { id: "pos_software_developer", name: "Software Developer" },
+    { id: "pos_product_owner", name: "Product Owner" },
+    { id: "pos_qa_engineer", name: "QA Engineer" },
+    { id: "pos_ux_designer", name: "UX Designer" },
 ] as const;
 
 const rolesCount = await client.execute({
