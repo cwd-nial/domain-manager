@@ -11,24 +11,10 @@ import {
     teams,
 } from "@/drizzle/schema";
 import { db } from "@/lib/db";
+import { wouldCreateCycle } from "@/lib/cycles";
 import { getSession } from "@/lib/session";
 
 type Params = { params: Promise<{ id: string }> };
-
-function wouldCreateCycle(
-    employeeId: string,
-    newManagerId: string,
-    managerMap: Record<string, string | null>,
-): boolean {
-    let current: string | null = newManagerId;
-    const visited = new Set<string>();
-    while (current !== null && !visited.has(current)) {
-        if (current === employeeId) return true;
-        visited.add(current);
-        current = managerMap[current] ?? null;
-    }
-    return false;
-}
 
 export async function GET(_: Request, { params }: Params) {
     const session = await getSession();

@@ -3,24 +3,10 @@ import { NextResponse } from "next/server";
 
 import { teams, employeeTeams, employees } from "@/drizzle/schema";
 import { db } from "@/lib/db";
+import { wouldCreateCycle } from "@/lib/cycles";
 import { getSession } from "@/lib/session";
 
 type Params = { params: Promise<{ id: string }> };
-
-function wouldCreateCycle(
-    teamId: string,
-    newParentId: string,
-    parentMap: Record<string, string | null>,
-): boolean {
-    let current: string | null = newParentId;
-    const visited = new Set<string>();
-    while (current !== null && !visited.has(current)) {
-        if (current === teamId) return true;
-        visited.add(current);
-        current = parentMap[current] ?? null;
-    }
-    return false;
-}
 
 export async function GET(_: Request, { params }: Params) {
     const session = await getSession();
