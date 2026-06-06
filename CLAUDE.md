@@ -38,7 +38,7 @@ These differ from training data — read `node_modules/next/dist/docs/` for auth
 
 ```tsx
 export default async function Page({ params }: PageProps<"/blog/[slug]">) {
-    const { slug } = await params;
+  const { slug } = await params;
 }
 ```
 

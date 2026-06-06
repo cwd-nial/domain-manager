@@ -75,15 +75,15 @@ npm test
 
 ### What's tested
 
-| Area                                                          | Files                                     |
-| ------------------------------------------------------------- | ----------------------------------------- |
-| Name formatting (`formatName`, `sortKey`)                     | `tests/lib/formatName.test.ts`            |
-| Team color assignment (hash + overrides)                      | `tests/lib/teamColors.test.ts`            |
-| Hierarchy cycle detection (`wouldCreateCycle`)                | `tests/lib/cycles.test.ts`                |
-| Employee API routes (list, create, detail, update, delete, tree)  | `tests/api/employees*.test.ts`          |
-| Team API routes (list, create, detail, update, delete, tree)      | `tests/api/teams*.test.ts`              |
-| `useDarkMode` hook (localStorage + classList)                 | `tests/hooks/useDarkMode.test.ts`         |
-| `NameFormatProvider` context (localStorage + toggle)          | `tests/hooks/nameFormatContext.test.tsx`  |
+| Area                                                             | Files                                    |
+| ---------------------------------------------------------------- | ---------------------------------------- |
+| Name formatting (`formatName`, `sortKey`)                        | `tests/lib/formatName.test.ts`           |
+| Team color assignment (hash + overrides)                         | `tests/lib/teamColors.test.ts`           |
+| Hierarchy cycle detection (`wouldCreateCycle`)                   | `tests/lib/cycles.test.ts`               |
+| Employee API routes (list, create, detail, update, delete, tree) | `tests/api/employees*.test.ts`           |
+| Team API routes (list, create, detail, update, delete, tree)     | `tests/api/teams*.test.ts`               |
+| `useDarkMode` hook (localStorage + classList)                    | `tests/hooks/useDarkMode.test.ts`        |
+| `NameFormatProvider` context (localStorage + toggle)             | `tests/hooks/nameFormatContext.test.tsx` |
 
 API route tests use mocked database and session dependencies — no running database is required.
 
