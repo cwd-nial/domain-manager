@@ -19,6 +19,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 
     const [req] = await db.select().from(accessRequests).where(eq(accessRequests.id, id));
     if (!req) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+    if (req.status !== 'pending') return NextResponse.json({ error: 'Request already processed' }, { status: 409 });
 
     const now = new Date();
 
@@ -33,6 +34,8 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 
     if (action === 'approve') {
         await db.update(user).set({ isAdmin: true }).where(eq(user.id, req.userId));
+    } else {
+        await db.update(user).set({ isAdmin: false }).where(eq(user.id, req.userId));
     }
 
     return NextResponse.json({ success: true });

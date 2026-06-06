@@ -11,6 +11,28 @@ A Next.js application for managing employees, teams, roles, and positions within
 - **Authentication** — credential-based login via better-auth; all pages except `/login` require a valid session
 - **Dark mode** — toggle between light and dark themes
 
+## Access Control
+
+The app uses a three-tier access model.
+
+| Role      | How granted               | What they can do                                                                             |
+| --------- | ------------------------- | -------------------------------------------------------------------------------------------- |
+| **Owner** | `OWNER_EMAIL` env var     | Everything; access is permanent and cannot be revoked via the UI                             |
+| **Admin** | Approved access request   | Create/edit/delete employees, teams, roles, and positions; approve or reject access requests |
+| **User**  | Any authenticated account | View all data in read-only mode; submit one access request at a time                         |
+
+### Owner
+
+Set `OWNER_EMAIL` in `.env.local` to the email address of the bootstrap admin account. The owner bypasses all DB-level admin checks — the `isAdmin` column is never consulted for this address. This makes it safe to bootstrap the first admin without needing a pre-existing admin to approve the request.
+
+### Admin
+
+Admins are regular users whose access request was approved by the owner or another admin. They can manage all data and review pending access requests. Admin access can be revoked: rejecting an already-approved request sets `isAdmin` back to `false` and takes effect on the user's next request.
+
+### User
+
+Every signed-up user starts as a regular user. They can browse all employees, teams, roles, and positions but cannot create, edit, or delete anything. A user may submit one access request at a time; once a request is processed (approved or rejected) it cannot be re-submitted through the same request record.
+
 ## Tech Stack
 
 - **Next.js 16** (App Router, Turbopack)
@@ -36,6 +58,7 @@ Create a `.env.local` file:
 BETTER_AUTH_SECRET=<random 32+ character string>
 BETTER_AUTH_URL=http://localhost:3000
 DATABASE_URL=./domain.db
+OWNER_EMAIL=you@example.com   # optional — grants permanent owner-level admin
 ```
 
 ### 3. Run database migrations and seed

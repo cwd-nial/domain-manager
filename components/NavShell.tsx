@@ -1,6 +1,6 @@
 'use client';
 
-import { Home, LogOut, Moon, ShieldCheck, Sun, User } from 'lucide-react';
+import { Home, LogOut, Moon, Network, Settings, Sun, Users } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 
@@ -18,9 +18,9 @@ export function NavShell({ isAdmin }: { isAdmin: boolean }) {
 
     const links = [
         { href: '/', label: 'Home', icon: Home },
-        { href: '/employees', label: 'Employees' },
-        { href: '/teams', label: 'Teams' },
-        ...(isAdmin ? [{ href: '/admin', label: 'Admin', icon: ShieldCheck }] : []),
+        { href: '/employees', label: 'Employees', icon: Users },
+        { href: '/teams', label: 'Teams', icon: Network },
+        ...(isAdmin ? [{ href: '/admin', label: 'Admin', icon: Settings }] : []),
     ];
 
     async function handleSignOut() {
@@ -32,7 +32,10 @@ export function NavShell({ isAdmin }: { isAdmin: boolean }) {
         <header className="border-b border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900">
             <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4">
                 <nav className="flex items-center gap-6">
-                    <span className="mr-2 font-semibold text-gray-900 dark:text-gray-100">Domain Manager</span>
+                    <span className="mr-2 font-semibold text-gray-900 sm:hidden dark:text-gray-100">DM</span>
+                    <span className="mr-2 hidden font-semibold text-gray-900 sm:inline dark:text-gray-100">
+                        Domain Manager
+                    </span>
                     {links.map(({ href, label, icon: Icon }) => {
                         const active =
                             href === '/' ? pathname === '/' : pathname === href || pathname.startsWith(href + '/');
@@ -57,7 +60,7 @@ export function NavShell({ isAdmin }: { isAdmin: boolean }) {
                         onClick={toggleFormat}
                         className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
                     >
-                        <User size={16} className={iconClass} />
+                        <span className="shrink-0 text-xs font-bold text-blue-600 dark:text-teal-400">A→Z</span>
                         <span className="hidden sm:inline">{format === 'FL' ? 'Last, First' : 'First Last'}</span>
                     </button>
                     <button
