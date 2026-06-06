@@ -10,6 +10,8 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
         return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
     const session = await getSession();
+    if (!session) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
     const { id } = await params;
     const { action } = await request.json() as { action: "approve" | "reject" };
 
@@ -23,7 +25,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 
     await db
         .update(accessRequests)
-        .set({ status: action === "approve" ? "approved" : "rejected", reviewedAt: now, reviewedBy: session!.user.id })
+        .set({ status: action === "approve" ? "approved" : "rejected", reviewedAt: now, reviewedBy: session.user.id })
         .where(eq(accessRequests.id, id));
 
     if (action === "approve") {
