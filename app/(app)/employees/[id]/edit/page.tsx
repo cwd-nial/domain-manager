@@ -13,12 +13,12 @@ import {
     teams,
 } from "@/drizzle/schema";
 import { db } from "@/lib/db";
-import { requireAuth } from "@/lib/session";
+import { requireAdmin } from "@/lib/session";
 
 type PageProps = { params: Promise<{ id: string }> };
 
 export default async function EditEmployeePage({ params }: PageProps) {
-    await requireAuth();
+    await requireAdmin();
     const { id } = await params;
 
     const [emp] = await db.select().from(employees).where(eq(employees.id, id));

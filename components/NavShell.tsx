@@ -7,7 +7,7 @@ import { useDarkMode } from "@/hooks/useDarkMode";
 import { authClient } from "@/lib/auth-client";
 import { useNameFormat } from "@/lib/nameFormatContext";
 
-export function NavShell() {
+export function NavShell({ isAdmin }: { isAdmin: boolean }) {
     const pathname = usePathname();
     const router = useRouter();
     const [isDark, toggleDark] = useDarkMode();
@@ -17,6 +17,7 @@ export function NavShell() {
         { href: "/", label: "Home" },
         { href: "/employees", label: "Employees" },
         { href: "/teams", label: "Teams" },
+        ...(isAdmin ? [{ href: "/admin", label: "⚙ Admin" }] : []),
     ];
 
     async function handleSignOut() {
@@ -65,6 +66,18 @@ export function NavShell() {
                     >
                         {isDark ? "☀ Light" : "☾ Dark"}
                     </button>
+                    {!isAdmin && (
+                        <Link
+                            href="/request-admin"
+                            className={`text-sm ${
+                                pathname === "/request-admin"
+                                    ? "text-blue-600 dark:text-teal-400 font-medium"
+                                    : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+                            }`}
+                        >
+                            Request Admin
+                        </Link>
+                    )}
                     <button
                         onClick={handleSignOut}
                         className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"

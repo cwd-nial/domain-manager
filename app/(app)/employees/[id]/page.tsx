@@ -15,13 +15,13 @@ import {
     teams,
 } from "@/drizzle/schema";
 import { db } from "@/lib/db";
-import { requireAuth } from "@/lib/session";
+import { getIsAdmin, requireAuth } from "@/lib/session";
 
 type PageProps = { params: Promise<{ id: string }> };
 
 export default async function EmployeeDetailPage({ params }: PageProps) {
+    const [isAdmin, { id }] = await Promise.all([getIsAdmin(), params]);
     await requireAuth();
-    const { id } = await params;
 
     const [emp] = await db.select().from(employees).where(eq(employees.id, id));
     if (!emp) notFound();
@@ -79,19 +79,21 @@ export default async function EmployeeDetailPage({ params }: PageProps) {
                         </p>
                     )}
                 </div>
-                <div className="flex gap-2">
-                    <Link
-                        href={`/employees/${id}/edit`}
-                        className="rounded-md border border-gray-300 dark:border-gray-600 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
-                    >
-                        Edit
-                    </Link>
-                    <DeleteButton
-                        url={`/api/employees/${id}`}
-                        redirectTo="/employees"
-                        label="Delete"
-                    />
-                </div>
+                {isAdmin && (
+                    <div className="flex gap-2">
+                        <Link
+                            href={`/employees/${id}/edit`}
+                            className="rounded-md border border-gray-300 dark:border-gray-600 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                        >
+                            Edit
+                        </Link>
+                        <DeleteButton
+                            url={`/api/employees/${id}`}
+                            redirectTo="/employees"
+                            label="Delete"
+                        />
+                    </div>
+                )}
             </div>
 
             <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 divide-y divide-gray-100 dark:divide-gray-700">

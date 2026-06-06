@@ -137,55 +137,27 @@ await client.batch([
     )`,
         args: [],
     },
+    {
+        sql: `CREATE TABLE IF NOT EXISTS access_requests (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL REFERENCES user(id) ON DELETE CASCADE,
+      status TEXT NOT NULL DEFAULT 'pending',
+      created_at INTEGER NOT NULL DEFAULT (cast(unixepoch('subsecond') * 1000 as integer)),
+      reviewed_at INTEGER,
+      reviewed_by TEXT REFERENCES user(id)
+    )`,
+        args: [],
+    },
 ]);
 
-// ── Seed static lookup tables ─────────────────────────────────────────────────
-
-const ROLES = [
-    { id: "role_frontend_dev", name: "FE Developer" },
-    { id: "role_backend_dev", name: "BE developer" },
-    { id: "role_fullstack_dev", name: "Fullstack developer" },
-    { id: "role_dev_ops", name: "DevOps" },
-    { id: "role_qa", name: "QA" },
-    { id: "role_po", name: "PO" },
-    { id: "role_ux", name: "UX" },
-] as const;
-
-const POSITIONS = [
-    { id: "pos_domain_lead", name: "Domain Lead" },
-    { id: "pos_solution_architect", name: "Solution Architect" },
-    { id: "pos_team_lead", name: "Team Lead" },
-    { id: "pos_engineering_lead", name: "Engineering Lead" },
-    { id: "pos_software_developer", name: "Software Developer" },
-    { id: "pos_product_owner", name: "Product Owner" },
-    { id: "pos_qa_engineer", name: "QA Engineer" },
-    { id: "pos_ux_designer", name: "UX Designer" },
-] as const;
-
-const rolesCount = await client.execute({
-    sql: "SELECT COUNT(*) as count FROM roles",
-    args: [],
-});
-if ((rolesCount.rows[0] as unknown as { count: number }).count === 0) {
-    await client.batch(
-        ROLES.map(({ id, name }) => ({
-            sql: "INSERT OR IGNORE INTO roles (id, name) VALUES (?, ?)",
-            args: [id, name],
-        })),
-    );
-}
-
-const positionsCount = await client.execute({
-    sql: "SELECT COUNT(*) as count FROM positions",
-    args: [],
-});
-if ((positionsCount.rows[0] as unknown as { count: number }).count === 0) {
-    await client.batch(
-        POSITIONS.map(({ id, name }) => ({
-            sql: "INSERT OR IGNORE INTO positions (id, name) VALUES (?, ?)",
-            args: [id, name],
-        })),
-    );
+// ── Migrate user: add is_admin column ────────────────────────────────────────
+const userCols = await client.execute({ sql: "PRAGMA table_info(user)", args: [] });
+const userColNames = new Set(userCols.rows.map((r) => String(r[1])));
+if (!userColNames.has("is_admin")) {
+    await client.execute({
+        sql: "ALTER TABLE user ADD COLUMN is_admin INTEGER NOT NULL DEFAULT 0",
+        args: [],
+    });
 }
 
 // ── Migrate employees: split name → first_name/last_name, then drop name ──────

@@ -10,6 +10,7 @@ export const user = sqliteTable("user", {
     email: text("email").notNull().unique(),
     emailVerified: integer("email_verified", { mode: "boolean" }).default(false).notNull(),
     image: text("image"),
+    isAdmin: integer("is_admin", { mode: "boolean" }).default(false).notNull(),
     createdAt: integer("created_at", { mode: "timestamp_ms" })
         .default(sql`(cast(unixepoch('subsecond') * 1000 as integer))`)
         .notNull(),
@@ -159,3 +160,18 @@ export const employeePositions = sqliteTable(
     },
     (t) => [primaryKey({ columns: [t.employeeId, t.positionId] })],
 );
+
+export const accessRequests = sqliteTable("access_requests", {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+        .notNull()
+        .references(() => user.id, { onDelete: "cascade" }),
+    status: text("status", { enum: ["pending", "approved", "rejected"] })
+        .notNull()
+        .default("pending"),
+    createdAt: integer("created_at", { mode: "timestamp_ms" })
+        .default(sql`(cast(unixepoch('subsecond') * 1000 as integer))`)
+        .notNull(),
+    reviewedAt: integer("reviewed_at", { mode: "timestamp_ms" }),
+    reviewedBy: text("reviewed_by").references(() => user.id),
+});

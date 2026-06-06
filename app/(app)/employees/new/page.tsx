@@ -1,10 +1,10 @@
 import { EmployeeForm } from "@/components/EmployeeForm";
 import { employees, roles, positions, teams } from "@/drizzle/schema";
 import { db } from "@/lib/db";
-import { requireAuth } from "@/lib/session";
+import { requireAdmin } from "@/lib/session";
 
 export default async function NewEmployeePage() {
-    await requireAuth();
+    await requireAdmin();
     const [allRoles, allPositions, allTeams, allEmps] = await Promise.all([
         db.select().from(roles),
         db.select().from(positions),

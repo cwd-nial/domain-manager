@@ -15,4 +15,15 @@ export const auth = betterAuth({
         },
     }),
     emailAndPassword: { enabled: true },
+    user: {
+        additionalFields: {
+            isAdmin: {
+                type: "boolean",
+                required: false,
+                defaultValue: false,
+                input: false,
+                returned: true,
+            },
+        },
+    },
 });

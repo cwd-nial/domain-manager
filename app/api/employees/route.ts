@@ -10,7 +10,7 @@ import {
     teams,
 } from "@/drizzle/schema";
 import { db } from "@/lib/db";
-import { getSession } from "@/lib/session";
+import { checkIsAdmin, getSession } from "@/lib/session";
 
 export async function GET() {
     const session = await getSession();
@@ -55,8 +55,8 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-    const session = await getSession();
-    if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (!(await checkIsAdmin(request.headers)))
+        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
     const body = await request.json();
     const {

@@ -2,10 +2,10 @@ import Link from "next/link";
 
 import { teams, employeeTeams } from "@/drizzle/schema";
 import { db } from "@/lib/db";
-import { requireAuth } from "@/lib/session";
+import { getIsAdmin, requireAuth } from "@/lib/session";
 
 export default async function TeamsPage() {
-    await requireAuth();
+    const [isAdmin] = await Promise.all([getIsAdmin(), requireAuth()]);
     const [allTeams, allEmpTeams] = await Promise.all([
         db.select().from(teams),
         db.select().from(employeeTeams),
@@ -25,12 +25,14 @@ export default async function TeamsPage() {
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Teams</h1>
-                <Link
-                    href="/teams/new"
-                    className="rounded-md bg-blue-600 dark:bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 dark:hover:bg-teal-700"
-                >
-                    + New Team
-                </Link>
+                {isAdmin && (
+                    <Link
+                        href="/teams/new"
+                        className="rounded-md bg-blue-600 dark:bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 dark:hover:bg-teal-700"
+                    >
+                        + New Team
+                    </Link>
+                )}
             </div>
             <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
                 <table className="w-full text-sm">
@@ -54,13 +56,19 @@ export default async function TeamsPage() {
                                     colSpan={3}
                                     className="px-4 py-10 text-center text-gray-400 dark:text-gray-500 italic"
                                 >
-                                    No teams yet —{" "}
-                                    <Link
-                                        href="/teams/new"
-                                        className="text-blue-600 dark:text-teal-400 hover:underline"
-                                    >
-                                        add one
-                                    </Link>
+                                    {isAdmin ? (
+                                        <>
+                                            No teams yet —{" "}
+                                            <Link
+                                                href="/teams/new"
+                                                className="text-blue-600 dark:text-teal-400 hover:underline"
+                                            >
+                                                add one
+                                            </Link>
+                                        </>
+                                    ) : (
+                                        "No teams yet"
+                                    )}
                                 </td>
                             </tr>
                         ) : (

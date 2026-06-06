@@ -1,10 +1,10 @@
 import { TeamForm } from "@/components/TeamForm";
 import { teams } from "@/drizzle/schema";
 import { db } from "@/lib/db";
-import { requireAuth } from "@/lib/session";
+import { requireAdmin } from "@/lib/session";
 
 export default async function NewTeamPage() {
-    await requireAuth();
+    await requireAdmin();
     const allTeams = await db.select().from(teams);
 
     return (
