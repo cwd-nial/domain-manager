@@ -1,11 +1,14 @@
 "use client";
 
+import { Home, LogOut, Moon, ShieldCheck, Sun, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
 import { useDarkMode } from "@/hooks/useDarkMode";
 import { authClient } from "@/lib/auth-client";
 import { useNameFormat } from "@/lib/nameFormatContext";
+
+const iconClass = "text-blue-600 dark:text-teal-400 shrink-0";
 
 export function NavShell({ isAdmin }: { isAdmin: boolean }) {
     const pathname = usePathname();
@@ -14,10 +17,10 @@ export function NavShell({ isAdmin }: { isAdmin: boolean }) {
     const [format, toggleFormat] = useNameFormat();
 
     const links = [
-        { href: "/", label: "Home" },
+        { href: "/", label: "Home", icon: Home },
         { href: "/employees", label: "Employees" },
         { href: "/teams", label: "Teams" },
-        ...(isAdmin ? [{ href: "/admin", label: "⚙ Admin" }] : []),
+        ...(isAdmin ? [{ href: "/admin", label: "Admin", icon: ShieldCheck }] : []),
     ];
 
     async function handleSignOut() {
@@ -32,7 +35,7 @@ export function NavShell({ isAdmin }: { isAdmin: boolean }) {
                     <span className="font-semibold text-gray-900 dark:text-gray-100 mr-2">
                         Domain Manager
                     </span>
-                    {links.map(({ href, label }) => {
+                    {links.map(({ href, label, icon: Icon }) => {
                         const active =
                             href === "/"
                                 ? pathname === "/"
@@ -41,13 +44,14 @@ export function NavShell({ isAdmin }: { isAdmin: boolean }) {
                             <Link
                                 key={href}
                                 href={href}
-                                className={`text-sm ${
+                                className={`flex items-center gap-1.5 text-sm ${
                                     active
                                         ? "text-blue-600 dark:text-teal-400 font-medium"
                                         : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
                                 }`}
                             >
-                                {label}
+                                {Icon && <Icon size={16} className={iconClass} />}
+                                <span className="hidden sm:inline">{label}</span>
                             </Link>
                         );
                     })}
@@ -55,16 +59,24 @@ export function NavShell({ isAdmin }: { isAdmin: boolean }) {
                 <div className="flex items-center gap-3">
                     <button
                         onClick={toggleFormat}
-                        className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+                        className="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
                     >
-                        {format === "FL" ? "Last, First" : "First Last"}
+                        <User size={16} className={iconClass} />
+                        <span className="hidden sm:inline">
+                            {format === "FL" ? "Last, First" : "First Last"}
+                        </span>
                     </button>
                     <button
                         onClick={toggleDark}
-                        className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+                        className="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
                         aria-label="Toggle dark mode"
                     >
-                        {isDark ? "☀ Light" : "☾ Dark"}
+                        {isDark ? (
+                            <Sun size={16} className={iconClass} />
+                        ) : (
+                            <Moon size={16} className={iconClass} />
+                        )}
+                        <span className="hidden sm:inline">{isDark ? "Light" : "Dark"}</span>
                     </button>
                     {!isAdmin && (
                         <Link
@@ -80,9 +92,10 @@ export function NavShell({ isAdmin }: { isAdmin: boolean }) {
                     )}
                     <button
                         onClick={handleSignOut}
-                        className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+                        className="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
                     >
-                        Sign out
+                        <LogOut size={16} className={iconClass} />
+                        <span className="hidden sm:inline">Sign out</span>
                     </button>
                 </div>
             </div>
