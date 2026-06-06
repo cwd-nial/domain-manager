@@ -1,17 +1,18 @@
-import { fileURLToPath } from "node:url";
-import { defineConfig } from "vitest/config";
+import { fileURLToPath } from 'node:url';
 
-const __dirname = fileURLToPath(new URL(".", import.meta.url));
+import { defineConfig } from 'vitest/config';
+
+const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
 export default defineConfig({
-  resolve: {
-    alias: {
-      "@": __dirname,
+    resolve: {
+        alias: {
+            '@': __dirname,
+        },
     },
-  },
-  test: {
-    globals: true,
-    clearMocks: true,
-    environment: "node",
-  },
+    test: {
+        globals: true,
+        clearMocks: true,
+        environment: 'node',
+    },
 });

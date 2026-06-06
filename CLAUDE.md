@@ -37,8 +37,8 @@ These differ from training data — read `node_modules/next/dist/docs/` for auth
 **Async Request APIs** — `cookies()`, `headers()`, `draftMode()`, `params`, and `searchParams` are async-only. Always `await` them:
 
 ```tsx
-export default async function Page({ params }: PageProps<"/blog/[slug]">) {
-  const { slug } = await params;
+export default async function Page({ params }: PageProps<'/blog/[slug]'>) {
+    const { slug } = await params;
 }
 ```
 
