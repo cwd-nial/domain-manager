@@ -60,7 +60,7 @@ export function NavShell({ isAdmin }: { isAdmin: boolean }) {
                         onClick={toggleFormat}
                         className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
                     >
-                        <span className="shrink-0 text-xs font-bold text-blue-600 dark:text-teal-400">A→Z</span>
+                        <span className="shrink-0 text-xs font-bold text-blue-600 dark:text-teal-400">F→L</span>
                         <span className="hidden sm:inline">{format === 'FL' ? 'Last, First' : 'First Last'}</span>
                     </button>
                     <button

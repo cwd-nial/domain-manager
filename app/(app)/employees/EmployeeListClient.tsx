@@ -1,5 +1,6 @@
 'use client';
 
+import { ArrowDown } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useMemo } from 'react';
 
@@ -41,14 +42,19 @@ export function EmployeeListClient({ employees }: { employees: Employee[] }) {
                                 <span>Name</span>
                                 <button
                                     onClick={() => setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'))}
-                                    className="rounded bg-gray-200 px-1.5 py-0.5 text-xs font-normal text-gray-600 transition-colors hover:bg-gray-300 dark:bg-gray-600 dark:text-gray-300 dark:hover:bg-gray-500"
+                                    className="rounded bg-gray-200 p-0.5 text-gray-600 transition-colors hover:bg-gray-300 dark:bg-gray-600 dark:text-gray-300 dark:hover:bg-gray-500"
                                     title={sortDir === 'asc' ? 'Sorted A → Z' : 'Sorted Z → A'}
                                 >
-                                    {sortDir === 'asc' ? 'A→Z' : 'Z→A'}
+                                    <ArrowDown
+                                        size={14}
+                                        className={`transition-transform duration-200 ${sortDir === 'desc' ? 'rotate-180' : ''}`}
+                                    />
                                 </button>
                             </div>
                         </th>
-                        <th className="px-4 py-3 text-left font-medium text-gray-700 dark:text-gray-300">Email</th>
+                        <th className="hidden px-4 py-3 text-left font-medium text-gray-700 sm:table-cell dark:text-gray-300">
+                            Email
+                        </th>
                         <th className="px-4 py-3 text-left font-medium text-gray-700 dark:text-gray-300">Roles</th>
                         <th className="px-4 py-3 text-left font-medium text-gray-700 dark:text-gray-300">Positions</th>
                     </tr>
@@ -77,7 +83,9 @@ export function EmployeeListClient({ employees }: { employees: Employee[] }) {
                                         {formatName(emp.firstName, emp.lastName, format)}
                                     </Link>
                                 </td>
-                                <td className="px-4 py-3 text-gray-600 dark:text-gray-400">{emp.email ?? '—'}</td>
+                                <td className="hidden px-4 py-3 text-gray-600 sm:table-cell dark:text-gray-400">
+                                    {emp.email ?? '—'}
+                                </td>
                                 <td className="px-4 py-3">
                                     <BadgeGroup items={emp.roleNames} variant="role" />
                                 </td>
