@@ -3,8 +3,12 @@ import { drizzle } from "drizzle-orm/libsql";
 
 import * as schema from "@/drizzle/schema";
 
+const raw = process.env.DATABASE_URL ?? "./domain.db";
+const isTurso = raw.startsWith("libsql://") || raw.startsWith("https://");
+
 const client = createClient({
-    url: `file:${process.env.DATABASE_URL ?? "./domain.db"}`,
+    url: isTurso ? raw : `file:${raw}`,
+    ...(isTurso && { authToken: process.env.DATABASE_AUTH_TOKEN }),
 });
 
 await client.execute({ sql: "PRAGMA journal_mode = WAL", args: [] });
