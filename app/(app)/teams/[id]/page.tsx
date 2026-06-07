@@ -16,10 +16,7 @@ export default async function TeamDetailPage({ params }: PageProps) {
     const [team] = await db.select().from(teams).where(eq(teams.id, id));
     if (!team) notFound();
 
-    const [empTeamRows, subTeams, allTeams, allEmps] = await Promise.all([
-        db.select().from(employeeTeams).where(eq(employeeTeams.teamId, id)),
-        db.select().from(teams).where(eq(teams.parentId, id)),
-        db.select({ id: teams.id, name: teams.name }).from(teams),
+    const [members, subTeams, parentRows] = await Promise.all([
         db
             .select({
                 id: employees.id,
@@ -27,13 +24,16 @@ export default async function TeamDetailPage({ params }: PageProps) {
                 lastName: employees.lastName,
                 email: employees.email,
             })
-            .from(employees),
+            .from(employees)
+            .innerJoin(employeeTeams, eq(employees.id, employeeTeams.employeeId))
+            .where(eq(employeeTeams.teamId, id)),
+        db.select().from(teams).where(eq(teams.parentId, id)),
+        team.parentId
+            ? db.select({ name: teams.name }).from(teams).where(eq(teams.id, team.parentId))
+            : Promise.resolve([] as { name: string }[]),
     ]);
 
-    const memberIds = new Set(empTeamRows.map((et) => et.employeeId));
-    const members = allEmps.filter((e) => memberIds.has(e.id));
-    const teamsById = Object.fromEntries(allTeams.map((t) => [t.id, t.name]));
-    const parentName = team.parentId ? teamsById[team.parentId] : null;
+    const parentName = parentRows[0]?.name ?? null;
 
     return (
         <div className="max-w-2xl space-y-6">

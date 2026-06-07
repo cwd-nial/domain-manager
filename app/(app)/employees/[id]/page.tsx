@@ -18,42 +18,39 @@ export default async function EmployeeDetailPage({ params }: PageProps) {
     const [emp] = await db.select().from(employees).where(eq(employees.id, id));
     if (!emp) notFound();
 
-    const [empRoles, empPositions, empTeams, allRoles, allPositions, allTeams, allEmps, reports] = await Promise.all([
-        db.select().from(employeeRoles).where(eq(employeeRoles.employeeId, id)),
-        db.select().from(employeePositions).where(eq(employeePositions.employeeId, id)),
-        db.select().from(employeeTeams).where(eq(employeeTeams.employeeId, id)),
-        db.select().from(roles),
-        db.select().from(positions),
-        db.select().from(teams),
+    const [roleNames, positionNames, empTeamList, managerRows, reports] = await Promise.all([
         db
-            .select({
-                id: employees.id,
-                firstName: employees.firstName,
-                lastName: employees.lastName,
-            })
-            .from(employees),
+            .select({ name: roles.name })
+            .from(roles)
+            .innerJoin(employeeRoles, eq(roles.id, employeeRoles.roleId))
+            .where(eq(employeeRoles.employeeId, id))
+            .then((rows) => rows.map((r) => r.name)),
         db
-            .select({
-                id: employees.id,
-                firstName: employees.firstName,
-                lastName: employees.lastName,
-            })
+            .select({ name: positions.name })
+            .from(positions)
+            .innerJoin(employeePositions, eq(positions.id, employeePositions.positionId))
+            .where(eq(employeePositions.employeeId, id))
+            .then((rows) => rows.map((r) => r.name)),
+        db
+            .select({ id: teams.id, name: teams.name })
+            .from(teams)
+            .innerJoin(employeeTeams, eq(teams.id, employeeTeams.teamId))
+            .where(eq(employeeTeams.employeeId, id)),
+        emp.managerId
+            ? db
+                  .select({ firstName: employees.firstName, lastName: employees.lastName })
+                  .from(employees)
+                  .where(eq(employees.id, emp.managerId))
+            : Promise.resolve([] as { firstName: string; lastName: string }[]),
+        db
+            .select({ id: employees.id, firstName: employees.firstName, lastName: employees.lastName })
             .from(employees)
             .where(eq(employees.managerId, id)),
     ]);
 
-    const rolesById = Object.fromEntries(allRoles.map((r) => [r.id, r.name]));
-    const positionsById = Object.fromEntries(allPositions.map((p) => [p.id, p.name]));
-    const teamsById = Object.fromEntries(allTeams.map((t) => [t.id, t.name]));
-    const empById = Object.fromEntries(allEmps.map((e) => [e.id, `${e.firstName} ${e.lastName}`.trim()]));
-
-    const roleNames = empRoles.map((er) => rolesById[er.roleId] ?? '');
-    const positionNames = empPositions.map((ep) => positionsById[ep.positionId] ?? '');
-    const empTeamList = empTeams.map((et) => ({
-        id: et.teamId,
-        name: teamsById[et.teamId] ?? '',
-    }));
-    const managerName = emp.managerId ? empById[emp.managerId] : null;
+    const managerName = managerRows[0]
+        ? `${managerRows[0].firstName} ${managerRows[0].lastName}`.trim()
+        : null;
 
     return (
         <div className="max-w-2xl space-y-6">

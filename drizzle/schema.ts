@@ -104,7 +104,7 @@ export const employees = sqliteTable('employees', {
     managerId: text('manager_id').references((): AnySQLiteColumn => employees.id),
     createdAt: integer('created_at', { mode: 'timestamp_ms' }),
     updatedAt: integer('updated_at', { mode: 'timestamp_ms' }),
-});
+}, (t) => [index('employees_managerId_idx').on(t.managerId)]);
 
 export const teams = sqliteTable('teams', {
     id: text('id').primaryKey(),
@@ -113,7 +113,7 @@ export const teams = sqliteTable('teams', {
     parentId: text('parent_id').references((): AnySQLiteColumn => teams.id),
     createdAt: integer('created_at', { mode: 'timestamp_ms' }),
     updatedAt: integer('updated_at', { mode: 'timestamp_ms' }),
-});
+}, (t) => [index('teams_parentId_idx').on(t.parentId)]);
 
 export const employeeTeams = sqliteTable(
     'employee_teams',
@@ -125,7 +125,7 @@ export const employeeTeams = sqliteTable(
             .notNull()
             .references(() => teams.id, { onDelete: 'cascade' }),
     },
-    (t) => [primaryKey({ columns: [t.employeeId, t.teamId] })]
+    (t) => [primaryKey({ columns: [t.employeeId, t.teamId] }), index('employee_teams_teamId_idx').on(t.teamId)]
 );
 
 export const roles = sqliteTable('roles', {
@@ -148,7 +148,7 @@ export const employeeRoles = sqliteTable(
             .notNull()
             .references(() => roles.id, { onDelete: 'cascade' }),
     },
-    (t) => [primaryKey({ columns: [t.employeeId, t.roleId] })]
+    (t) => [primaryKey({ columns: [t.employeeId, t.roleId] }), index('employee_roles_roleId_idx').on(t.roleId)]
 );
 
 export const employeePositions = sqliteTable(
@@ -161,7 +161,7 @@ export const employeePositions = sqliteTable(
             .notNull()
             .references(() => positions.id, { onDelete: 'cascade' }),
     },
-    (t) => [primaryKey({ columns: [t.employeeId, t.positionId] })]
+    (t) => [primaryKey({ columns: [t.employeeId, t.positionId] }), index('employee_positions_positionId_idx').on(t.positionId)]
 );
 
 export const accessRequests = sqliteTable('access_requests', {

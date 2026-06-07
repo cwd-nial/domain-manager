@@ -23,21 +23,31 @@ export async function GET() {
     const teamsById = Object.fromEntries(allTeams.map((t) => [t.id, t.name]));
     const empById = Object.fromEntries(allEmps.map((e) => [e.id, `${e.firstName} ${e.lastName}`.trim()]));
 
+    const empRolesMap = new Map<string, typeof allEmpRoles>();
+    for (const er of allEmpRoles) {
+        const b = empRolesMap.get(er.employeeId);
+        if (b) b.push(er); else empRolesMap.set(er.employeeId, [er]);
+    }
+    const empPositionsMap = new Map<string, typeof allEmpPositions>();
+    for (const ep of allEmpPositions) {
+        const b = empPositionsMap.get(ep.employeeId);
+        if (b) b.push(ep); else empPositionsMap.set(ep.employeeId, [ep]);
+    }
+    const empTeamsMap = new Map<string, typeof allEmpTeams>();
+    for (const et of allEmpTeams) {
+        const b = empTeamsMap.get(et.employeeId);
+        if (b) b.push(et); else empTeamsMap.set(et.employeeId, [et]);
+    }
+
     const result = allEmps.map((emp) => ({
         ...emp,
         managerName: emp.managerId ? (empById[emp.managerId] ?? null) : null,
-        roles: allEmpRoles
-            .filter((er) => er.employeeId === emp.id)
-            .map((er) => ({ id: er.roleId, name: rolesById[er.roleId] ?? '' })),
-        positions: allEmpPositions
-            .filter((ep) => ep.employeeId === emp.id)
-            .map((ep) => ({
-                id: ep.positionId,
-                name: positionsById[ep.positionId] ?? '',
-            })),
-        teams: allEmpTeams
-            .filter((et) => et.employeeId === emp.id)
-            .map((et) => ({ id: et.teamId, name: teamsById[et.teamId] ?? '' })),
+        roles: (empRolesMap.get(emp.id) ?? []).map((er) => ({ id: er.roleId, name: rolesById[er.roleId] ?? '' })),
+        positions: (empPositionsMap.get(emp.id) ?? []).map((ep) => ({
+            id: ep.positionId,
+            name: positionsById[ep.positionId] ?? '',
+        })),
+        teams: (empTeamsMap.get(emp.id) ?? []).map((et) => ({ id: et.teamId, name: teamsById[et.teamId] ?? '' })),
     }));
 
     return NextResponse.json(result);

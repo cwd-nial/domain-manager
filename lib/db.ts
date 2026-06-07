@@ -150,6 +150,15 @@ await client.batch([
     },
 ]);
 
+// ── Indexes ───────────────────────────────────────────────────────────────────
+await client.batch([
+    { sql: 'CREATE INDEX IF NOT EXISTS employees_managerId_idx ON employees(manager_id)', args: [] },
+    { sql: 'CREATE INDEX IF NOT EXISTS teams_parentId_idx ON teams(parent_id)', args: [] },
+    { sql: 'CREATE INDEX IF NOT EXISTS employee_teams_teamId_idx ON employee_teams(team_id)', args: [] },
+    { sql: 'CREATE INDEX IF NOT EXISTS employee_roles_roleId_idx ON employee_roles(role_id)', args: [] },
+    { sql: 'CREATE INDEX IF NOT EXISTS employee_positions_positionId_idx ON employee_positions(position_id)', args: [] },
+]);
+
 // ── Migrate user: add is_admin column ────────────────────────────────────────
 const userCols = await client.execute({ sql: 'PRAGMA table_info(user)', args: [] });
 const userColNames = new Set(userCols.rows.map((r) => String(r[1])));

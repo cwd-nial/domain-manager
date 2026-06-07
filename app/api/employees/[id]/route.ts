@@ -17,50 +17,44 @@ export async function GET(_: Request, { params }: Params) {
     const [emp] = await db.select().from(employees).where(eq(employees.id, id));
     if (!emp) return NextResponse.json({ error: 'Not found' }, { status: 404 });
 
-    const [empRoles, empPositions, empTeams, allRoles, allPositions, allTeams, allEmps, reports] = await Promise.all([
-        db.select().from(employeeRoles).where(eq(employeeRoles.employeeId, id)),
-        db.select().from(employeePositions).where(eq(employeePositions.employeeId, id)),
-        db.select().from(employeeTeams).where(eq(employeeTeams.employeeId, id)),
-        db.select().from(roles),
-        db.select().from(positions),
-        db.select().from(teams),
+    const [empRoleRows, empPositionRows, empTeamRows, managerRows, reports] = await Promise.all([
         db
-            .select({
-                id: employees.id,
-                firstName: employees.firstName,
-                lastName: employees.lastName,
-            })
-            .from(employees),
+            .select({ id: roles.id, name: roles.name })
+            .from(roles)
+            .innerJoin(employeeRoles, eq(roles.id, employeeRoles.roleId))
+            .where(eq(employeeRoles.employeeId, id)),
         db
-            .select({
-                id: employees.id,
-                firstName: employees.firstName,
-                lastName: employees.lastName,
-            })
+            .select({ id: positions.id, name: positions.name })
+            .from(positions)
+            .innerJoin(employeePositions, eq(positions.id, employeePositions.positionId))
+            .where(eq(employeePositions.employeeId, id)),
+        db
+            .select({ id: teams.id, name: teams.name })
+            .from(teams)
+            .innerJoin(employeeTeams, eq(teams.id, employeeTeams.teamId))
+            .where(eq(employeeTeams.employeeId, id)),
+        emp.managerId
+            ? db
+                  .select({ firstName: employees.firstName, lastName: employees.lastName })
+                  .from(employees)
+                  .where(eq(employees.id, emp.managerId))
+            : Promise.resolve([] as { firstName: string; lastName: string }[]),
+        db
+            .select({ id: employees.id, firstName: employees.firstName, lastName: employees.lastName })
             .from(employees)
             .where(eq(employees.managerId, id)),
     ]);
 
-    const rolesById = Object.fromEntries(allRoles.map((r) => [r.id, r.name]));
-    const positionsById = Object.fromEntries(allPositions.map((p) => [p.id, p.name]));
-    const teamsById = Object.fromEntries(allTeams.map((t) => [t.id, t.name]));
-    const empById = Object.fromEntries(allEmps.map((e) => [e.id, `${e.firstName} ${e.lastName}`.trim()]));
+    const managerName = managerRows[0]
+        ? `${managerRows[0].firstName} ${managerRows[0].lastName}`.trim()
+        : null;
 
     return NextResponse.json({
         ...emp,
-        managerName: emp.managerId ? (empById[emp.managerId] ?? null) : null,
-        roles: empRoles.map((er) => ({
-            id: er.roleId,
-            name: rolesById[er.roleId] ?? '',
-        })),
-        positions: empPositions.map((ep) => ({
-            id: ep.positionId,
-            name: positionsById[ep.positionId] ?? '',
-        })),
-        teams: empTeams.map((et) => ({
-            id: et.teamId,
-            name: teamsById[et.teamId] ?? '',
-        })),
+        managerName,
+        roles: empRoleRows,
+        positions: empPositionRows,
+        teams: empTeamRows,
         reports,
     });
 }

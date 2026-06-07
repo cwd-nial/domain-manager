@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { useState } from 'react';
 
 import { formatName, type NameFormat } from '@/lib/formatName';
-import { teamColorClass } from '@/lib/teamColors';
 
 export type TreeNode = {
     id: string;
@@ -15,7 +14,7 @@ export type TreeNode = {
     href?: string;
     children: TreeNode[];
     memberEmployees?: { id: string; firstName: string; lastName: string }[];
-    teamBadges?: { id: string; name: string }[];
+    teamBadges?: { id: string; name: string; colorClass: string }[];
 };
 
 function TreeNodeItem({
@@ -66,7 +65,7 @@ function TreeNodeItem({
                                 {node.teamBadges.map((badge) => (
                                     <span
                                         key={badge.id}
-                                        className={`rounded px-1.5 py-0.5 text-xs font-medium ${teamColorClass(badge.id)}`}
+                                        className={`rounded px-1.5 py-0.5 text-xs font-medium ${badge.colorClass}`}
                                     >
                                         {badge.name}
                                     </span>

@@ -29,6 +29,17 @@ export async function GET() {
     const rolesById = Object.fromEntries(allRoles.map((r) => [r.id, r.name]));
     const positionsById = Object.fromEntries(allPositions.map((p) => [p.id, p.name]));
 
+    const empRolesMap = new Map<string, typeof allEmpRoles>();
+    for (const er of allEmpRoles) {
+        const b = empRolesMap.get(er.employeeId);
+        if (b) b.push(er); else empRolesMap.set(er.employeeId, [er]);
+    }
+    const empPositionsMap = new Map<string, typeof allEmpPositions>();
+    for (const ep of allEmpPositions) {
+        const b = empPositionsMap.get(ep.employeeId);
+        if (b) b.push(ep); else empPositionsMap.set(ep.employeeId, [ep]);
+    }
+
     const nodes = new Map<string, EmployeeNode>(
         allEmps.map((e) => [
             e.id,
@@ -37,15 +48,11 @@ export async function GET() {
                 firstName: e.firstName,
                 lastName: e.lastName,
                 email: e.email,
-                roles: allEmpRoles
-                    .filter((er) => er.employeeId === e.id)
-                    .map((er) => ({ id: er.roleId, name: rolesById[er.roleId] ?? '' })),
-                positions: allEmpPositions
-                    .filter((ep) => ep.employeeId === e.id)
-                    .map((ep) => ({
-                        id: ep.positionId,
-                        name: positionsById[ep.positionId] ?? '',
-                    })),
+                roles: (empRolesMap.get(e.id) ?? []).map((er) => ({ id: er.roleId, name: rolesById[er.roleId] ?? '' })),
+                positions: (empPositionsMap.get(e.id) ?? []).map((ep) => ({
+                    id: ep.positionId,
+                    name: positionsById[ep.positionId] ?? '',
+                })),
                 children: [],
             },
         ])

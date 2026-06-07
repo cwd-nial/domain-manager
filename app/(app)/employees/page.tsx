@@ -19,15 +19,24 @@ export default async function EmployeesPage() {
     const rolesById = Object.fromEntries(allRoles.map((r) => [r.id, r.name]));
     const positionsById = Object.fromEntries(allPositions.map((p) => [p.id, p.name]));
 
+    const empRolesMap = new Map<string, typeof allEmpRoles>();
+    for (const er of allEmpRoles) {
+        const b = empRolesMap.get(er.employeeId);
+        if (b) b.push(er); else empRolesMap.set(er.employeeId, [er]);
+    }
+    const empPositionsMap = new Map<string, typeof allEmpPositions>();
+    for (const ep of allEmpPositions) {
+        const b = empPositionsMap.get(ep.employeeId);
+        if (b) b.push(ep); else empPositionsMap.set(ep.employeeId, [ep]);
+    }
+
     const enriched = allEmps.map((emp) => ({
         id: emp.id,
         firstName: emp.firstName,
         lastName: emp.lastName,
         email: emp.email,
-        roleNames: allEmpRoles.filter((er) => er.employeeId === emp.id).map((er) => rolesById[er.roleId] ?? ''),
-        positionNames: allEmpPositions
-            .filter((ep) => ep.employeeId === emp.id)
-            .map((ep) => positionsById[ep.positionId] ?? ''),
+        roleNames: (empRolesMap.get(emp.id) ?? []).map((er) => rolesById[er.roleId] ?? ''),
+        positionNames: (empPositionsMap.get(emp.id) ?? []).map((ep) => positionsById[ep.positionId] ?? ''),
     }));
 
     return (

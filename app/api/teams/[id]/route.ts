@@ -17,9 +17,7 @@ export async function GET(_: Request, { params }: Params) {
     const [team] = await db.select().from(teams).where(eq(teams.id, id));
     if (!team) return NextResponse.json({ error: 'Not found' }, { status: 404 });
 
-    const [empTeamRows, subTeams, allEmps] = await Promise.all([
-        db.select().from(employeeTeams).where(eq(employeeTeams.teamId, id)),
-        db.select().from(teams).where(eq(teams.parentId, id)),
+    const [members, subTeams] = await Promise.all([
         db
             .select({
                 id: employees.id,
@@ -27,11 +25,11 @@ export async function GET(_: Request, { params }: Params) {
                 lastName: employees.lastName,
                 email: employees.email,
             })
-            .from(employees),
+            .from(employees)
+            .innerJoin(employeeTeams, eq(employees.id, employeeTeams.employeeId))
+            .where(eq(employeeTeams.teamId, id)),
+        db.select().from(teams).where(eq(teams.parentId, id)),
     ]);
-
-    const memberIds = new Set(empTeamRows.map((et) => et.employeeId));
-    const members = allEmps.filter((e) => memberIds.has(e.id));
 
     return NextResponse.json({ ...team, members, subTeams });
 }
