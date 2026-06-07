@@ -1,16 +1,17 @@
 import { eq } from 'drizzle-orm';
 import Link from 'next/link';
 
-import { accessRequests } from '@/drizzle/schema';
+import { accessRequests, user } from '@/drizzle/schema';
 import { db } from '@/lib/db';
 
 export default async function AdminPage() {
-    const pending = await db
-        .select({ id: accessRequests.id })
-        .from(accessRequests)
-        .where(eq(accessRequests.status, 'pending'));
+    const [pending, pendingRegs] = await Promise.all([
+        db.select({ id: accessRequests.id }).from(accessRequests).where(eq(accessRequests.status, 'pending')),
+        db.select({ id: user.id }).from(user).where(eq(user.registrationStatus, 'pending')),
+    ]);
 
     const pendingCount = pending.length;
+    const pendingRegsCount = pendingRegs.length;
 
     const sections = [
         { href: '/admin/roles', label: 'Roles', description: 'Create, edit and delete employee roles' },
@@ -18,6 +19,12 @@ export default async function AdminPage() {
             href: '/admin/positions',
             label: 'Positions',
             description: 'Create, edit and delete employee positions',
+        },
+        {
+            href: '/admin/registrations',
+            label: 'Registrations',
+            description: 'Approve or reject new user registrations',
+            badge: pendingRegsCount > 0 ? pendingRegsCount : null,
         },
         {
             href: '/admin/access-requests',

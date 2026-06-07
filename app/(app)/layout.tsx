@@ -1,9 +1,10 @@
 import { NavShell } from '@/components/NavShell';
-import { getIsAdmin } from '@/lib/session';
+import { getIsAdmin, requireApproved } from '@/lib/session';
 
 import { Providers } from './Providers';
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
+    await requireApproved();
     const isAdmin = await getIsAdmin();
     return (
         <Providers>

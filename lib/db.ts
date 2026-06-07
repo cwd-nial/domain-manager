@@ -160,6 +160,18 @@ if (!userColNames.has('is_admin')) {
     });
 }
 
+// ── Migrate user: add registration_status column ─────────────────────────────
+if (!userColNames.has('registration_status')) {
+    await client.execute({
+        sql: "ALTER TABLE user ADD COLUMN registration_status TEXT NOT NULL DEFAULT 'pending'",
+        args: [],
+    });
+    await client.execute({
+        sql: "UPDATE user SET registration_status = 'approved'",
+        args: [],
+    });
+}
+
 // ── Migrate employees: split name → first_name/last_name, then drop name ──────
 const empCols = await client.execute({
     sql: 'PRAGMA table_info(employees)',

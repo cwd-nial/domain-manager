@@ -39,7 +39,7 @@ export default function LoginPage() {
             setError(error.message ?? (mode === 'signin' ? 'Invalid credentials' : 'Sign-up failed'));
             setPending(false);
         } else {
-            router.push('/');
+            router.push(mode === 'signup' ? '/pending-approval' : '/');
         }
     }
 

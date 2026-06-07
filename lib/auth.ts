@@ -24,6 +24,13 @@ export const auth = betterAuth({
                 input: false,
                 returned: true,
             },
+            registrationStatus: {
+                type: 'string',
+                required: false,
+                defaultValue: 'pending',
+                input: false,
+                returned: true,
+            },
         },
     },
 });
