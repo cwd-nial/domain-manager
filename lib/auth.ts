@@ -4,7 +4,13 @@ import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import * as schema from '@/drizzle/schema';
 import { db } from '@/lib/db';
 
+const extra = process.env.BETTER_AUTH_TRUSTED_ORIGINS
+    ? process.env.BETTER_AUTH_TRUSTED_ORIGINS.split(',').map((s) => s.trim())
+    : [];
+
 export const auth = betterAuth({
+    baseURL: process.env.BETTER_AUTH_URL,
+    trustedOrigins: extra,
     database: drizzleAdapter(db, {
         provider: 'sqlite',
         schema: {
