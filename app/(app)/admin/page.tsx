@@ -46,7 +46,7 @@ export default async function AdminPage() {
                     >
                         <div>
                             <p className="font-medium text-gray-900 dark:text-gray-100">{label}</p>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">{description}</p>
+                            <p className="secondary-text">{description}</p>
                         </div>
                         {badge != null && (
                             <span className="ml-3 inline-flex items-center justify-center rounded-full bg-red-100 px-2 py-0.5 text-xs font-semibold text-red-700 dark:bg-red-900 dark:text-red-300">

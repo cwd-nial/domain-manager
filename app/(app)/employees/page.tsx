@@ -1,5 +1,6 @@
 import Link from 'next/link';
 
+import { buttonCls } from '@/components/ui/Button';
 import { employees, employeeRoles, employeePositions, roles, positions } from '@/drizzle/schema';
 import { db } from '@/lib/db';
 import { getIsAdmin, requireAuth } from '@/lib/session';
@@ -44,10 +45,7 @@ export default async function EmployeesPage() {
             <div className="flex items-center justify-between">
                 <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Employees</h1>
                 {isAdmin && (
-                    <Link
-                        href="/employees/new"
-                        className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 dark:bg-teal-600 dark:hover:bg-teal-700"
-                    >
+                    <Link href="/employees/new" className={buttonCls()}>
                         + New Employee
                     </Link>
                 )}

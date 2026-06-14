@@ -8,7 +8,7 @@ export default function NewRolePage() {
             <h1 className="mb-6 text-2xl font-semibold text-gray-900 dark:text-gray-100">New Role</h1>
             <LookupForm apiUrl="/api/roles" method="POST" redirectTo="/admin/roles" label="Role name" />
             <div className="mt-6">
-                <Link href="/admin/roles" className="text-sm text-gray-500 hover:underline dark:text-gray-400">
+                <Link href="/admin/roles" className="secondary-text hover:underline">
                     ← Back to Roles
                 </Link>
             </div>

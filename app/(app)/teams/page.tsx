@@ -1,5 +1,6 @@
 import Link from 'next/link';
 
+import { buttonCls } from '@/components/ui/Button';
 import { teams, employeeTeams } from '@/drizzle/schema';
 import { db } from '@/lib/db';
 import { getIsAdmin, requireAuth } from '@/lib/session';
@@ -23,10 +24,7 @@ export default async function TeamsPage() {
             <div className="flex items-center justify-between">
                 <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Teams</h1>
                 {isAdmin && (
-                    <Link
-                        href="/teams/new"
-                        className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 dark:bg-teal-600 dark:hover:bg-teal-700"
-                    >
+                    <Link href="/teams/new" className={buttonCls()}>
                         + New Team
                     </Link>
                 )}
@@ -54,10 +52,7 @@ export default async function TeamsPage() {
                                     {isAdmin ? (
                                         <>
                                             No teams yet —{' '}
-                                            <Link
-                                                href="/teams/new"
-                                                className="text-blue-600 hover:underline dark:text-teal-400"
-                                            >
+                                            <Link href="/teams/new" className="link-primary">
                                                 add one
                                             </Link>
                                         </>
@@ -70,10 +65,7 @@ export default async function TeamsPage() {
                             enriched.map((t) => (
                                 <tr key={t.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                                     <td className="px-4 py-3">
-                                        <Link
-                                            href={`/teams/${t.id}`}
-                                            className="font-medium text-blue-600 hover:underline dark:text-teal-400"
-                                        >
+                                        <Link href={`/teams/${t.id}`} className="link-primary font-medium">
                                             {t.name}
                                         </Link>
                                     </td>

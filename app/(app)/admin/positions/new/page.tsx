@@ -8,7 +8,7 @@ export default function NewPositionPage() {
             <h1 className="mb-6 text-2xl font-semibold text-gray-900 dark:text-gray-100">New Position</h1>
             <LookupForm apiUrl="/api/positions" method="POST" redirectTo="/admin/positions" label="Position name" />
             <div className="mt-6">
-                <Link href="/admin/positions" className="text-sm text-gray-500 hover:underline dark:text-gray-400">
+                <Link href="/admin/positions" className="secondary-text hover:underline">
                     ← Back to Positions
                 </Link>
             </div>

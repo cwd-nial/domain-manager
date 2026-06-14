@@ -17,10 +17,10 @@ Use the DocsExplorer subagent for efficient documentation lookup.
 ## Commands
 
 ```bash
-npm run dev        # Start dev server (Turbopack, outputs to .next/dev)
-npm run build      # Production build (Turbopack by default)
-npm run start      # Start production server
-npm run lint       # Run ESLint directly (next lint was removed in v16)
+bun run dev        # Start dev server (Turbopack, outputs to .next/dev)
+bun run build      # Production build (Turbopack by default)
+bun run start      # Start production server
+bun run lint       # Run ESLint directly (next lint was removed in v16)
 ```
 
 ## Stack
@@ -42,7 +42,7 @@ export default async function Page({ params }: PageProps<'/blog/[slug]'>) {
 }
 ```
 
-Run `npx next typegen` to generate `PageProps`/`LayoutProps`/`RouteContext` type helpers.
+Run `bunx next typegen` to generate `PageProps`/`LayoutProps`/`RouteContext` type helpers.
 
 **`middleware` → `proxy`** — rename `middleware.ts` to `proxy.ts` and the named export from `middleware` to `proxy`. The edge runtime is not supported in `proxy` (Node.js only).
 

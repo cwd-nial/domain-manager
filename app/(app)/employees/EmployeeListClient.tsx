@@ -64,10 +64,7 @@ export function EmployeeListClient({ employees }: { employees: Employee[] }) {
                         <tr>
                             <td colSpan={4} className="px-4 py-10 text-center text-gray-400 italic dark:text-gray-500">
                                 No employees yet —{' '}
-                                <Link
-                                    href="/employees/new"
-                                    className="text-blue-600 hover:underline dark:text-teal-400"
-                                >
+                                <Link href="/employees/new" className="link-primary">
                                     add one
                                 </Link>
                             </td>
@@ -76,10 +73,7 @@ export function EmployeeListClient({ employees }: { employees: Employee[] }) {
                         sorted.map((emp) => (
                             <tr key={emp.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                                 <td className="px-4 py-3">
-                                    <Link
-                                        href={`/employees/${emp.id}`}
-                                        className="font-medium text-blue-600 hover:underline dark:text-teal-400"
-                                    >
+                                    <Link href={`/employees/${emp.id}`} className="link-primary font-medium">
                                         {formatName(emp.firstName, emp.lastName, format)}
                                     </Link>
                                 </td>

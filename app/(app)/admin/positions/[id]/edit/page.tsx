@@ -22,7 +22,7 @@ export default async function EditPositionPage({ params }: { params: Promise<{ i
                 label="Position name"
             />
             <div className="mt-6">
-                <Link href="/admin/positions" className="text-sm text-gray-500 hover:underline dark:text-gray-400">
+                <Link href="/admin/positions" className="secondary-text hover:underline">
                     ← Back to Positions
                 </Link>
             </div>

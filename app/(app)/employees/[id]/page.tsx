@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import { BadgeGroup } from '@/components/BadgeGroup';
 import { DeleteButton } from '@/components/DeleteButton';
 import { FormattedName } from '@/components/FormattedName';
+import { buttonCls } from '@/components/ui/Button';
 import { employees, employeeRoles, employeePositions, employeeTeams, roles, positions, teams } from '@/drizzle/schema';
 import { db } from '@/lib/db';
 import { getIsAdmin, requireAuth } from '@/lib/session';
@@ -59,14 +60,11 @@ export default async function EmployeeDetailPage({ params }: PageProps) {
                     <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                         <FormattedName firstName={emp.firstName} lastName={emp.lastName} />
                     </h1>
-                    {emp.email && <p className="mt-0.5 text-sm text-gray-500 dark:text-gray-400">{emp.email}</p>}
+                    {emp.email && <p className="secondary-text mt-0.5">{emp.email}</p>}
                 </div>
                 {isAdmin && (
                     <div className="flex gap-2">
-                        <Link
-                            href={`/employees/${id}/edit`}
-                            className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
-                        >
+                        <Link href={`/employees/${id}/edit`} className={buttonCls('secondary')}>
                             Edit
                         </Link>
                         <DeleteButton url={`/api/employees/${id}`} redirectTo="/employees" label="Delete" />
@@ -82,10 +80,7 @@ export default async function EmployeeDetailPage({ params }: PageProps) {
                 )}
                 <Row label="Manager">
                     {emp.managerId && managerName ? (
-                        <Link
-                            href={`/employees/${emp.managerId}`}
-                            className="text-sm text-blue-600 hover:underline dark:text-teal-400"
-                        >
+                        <Link href={`/employees/${emp.managerId}`} className="link-primary text-sm">
                             {managerName}
                         </Link>
                     ) : (
@@ -111,10 +106,7 @@ export default async function EmployeeDetailPage({ params }: PageProps) {
                         <ul className="m-0 flex list-none flex-wrap gap-1 p-0">
                             {empTeamList.map((t) => (
                                 <li key={t.id}>
-                                    <Link
-                                        href={`/teams/${t.id}`}
-                                        className="text-sm text-blue-600 hover:underline dark:text-teal-400"
-                                    >
+                                    <Link href={`/teams/${t.id}`} className="link-primary text-sm">
                                         {t.name}
                                     </Link>
                                 </li>
@@ -129,10 +121,7 @@ export default async function EmployeeDetailPage({ params }: PageProps) {
                         <ul className="m-0 flex list-none flex-wrap gap-2 p-0">
                             {reports.map((r) => (
                                 <li key={r.id}>
-                                    <Link
-                                        href={`/employees/${r.id}`}
-                                        className="text-sm text-blue-600 hover:underline dark:text-teal-400"
-                                    >
+                                    <Link href={`/employees/${r.id}`} className="link-primary text-sm">
                                         <FormattedName firstName={r.firstName} lastName={r.lastName} />
                                     </Link>
                                 </li>
@@ -142,7 +131,7 @@ export default async function EmployeeDetailPage({ params }: PageProps) {
                 )}
             </div>
 
-            <Link href="/employees" className="text-sm text-gray-500 hover:underline dark:text-gray-400">
+            <Link href="/employees" className="secondary-text hover:underline">
                 ← Back to Employees
             </Link>
         </div>

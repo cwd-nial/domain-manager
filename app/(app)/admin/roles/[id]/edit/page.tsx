@@ -22,7 +22,7 @@ export default async function EditRolePage({ params }: { params: Promise<{ id: s
                 label="Role name"
             />
             <div className="mt-6">
-                <Link href="/admin/roles" className="text-sm text-gray-500 hover:underline dark:text-gray-400">
+                <Link href="/admin/roles" className="secondary-text hover:underline">
                     ← Back to Roles
                 </Link>
             </div>

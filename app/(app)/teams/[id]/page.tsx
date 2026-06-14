@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 import { DeleteButton } from '@/components/DeleteButton';
+import { buttonCls } from '@/components/ui/Button';
 import { teams, employeeTeams, employees } from '@/drizzle/schema';
 import { db } from '@/lib/db';
 import { getIsAdmin, requireAuth } from '@/lib/session';
@@ -40,16 +41,11 @@ export default async function TeamDetailPage({ params }: PageProps) {
             <div className="flex items-start justify-between">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{team.name}</h1>
-                    {team.description && (
-                        <p className="mt-0.5 text-sm text-gray-500 dark:text-gray-400">{team.description}</p>
-                    )}
+                    {team.description && <p className="secondary-text mt-0.5">{team.description}</p>}
                 </div>
                 {isAdmin && (
                     <div className="flex gap-2">
-                        <Link
-                            href={`/teams/${id}/edit`}
-                            className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
-                        >
+                        <Link href={`/teams/${id}/edit`} className={buttonCls('secondary')}>
                             Edit
                         </Link>
                         <DeleteButton url={`/api/teams/${id}`} redirectTo="/teams" label="Delete" />
@@ -60,10 +56,7 @@ export default async function TeamDetailPage({ params }: PageProps) {
             <div className="divide-y divide-gray-100 rounded-lg border border-gray-200 bg-white dark:divide-gray-700 dark:border-gray-700 dark:bg-gray-800">
                 {team.parentId && (
                     <Row label="Parent Team">
-                        <Link
-                            href={`/teams/${team.parentId}`}
-                            className="text-sm text-blue-600 hover:underline dark:text-teal-400"
-                        >
+                        <Link href={`/teams/${team.parentId}`} className="link-primary text-sm">
                             {parentName ?? team.parentId}
                         </Link>
                     </Row>
@@ -73,10 +66,7 @@ export default async function TeamDetailPage({ params }: PageProps) {
                         <ul className="m-0 list-none space-y-1 p-0">
                             {members.map((m) => (
                                 <li key={m.id} className="flex items-center gap-2">
-                                    <Link
-                                        href={`/employees/${m.id}`}
-                                        className="text-sm font-medium text-blue-600 hover:underline dark:text-teal-400"
-                                    >
+                                    <Link href={`/employees/${m.id}`} className="link-primary text-sm font-medium">
                                         {`${m.firstName} ${m.lastName}`.trim()}
                                     </Link>
                                     {m.email && (
@@ -94,10 +84,7 @@ export default async function TeamDetailPage({ params }: PageProps) {
                         <ul className="m-0 flex list-none flex-wrap gap-2 p-0">
                             {subTeams.map((s) => (
                                 <li key={s.id}>
-                                    <Link
-                                        href={`/teams/${s.id}`}
-                                        className="text-sm text-blue-600 hover:underline dark:text-teal-400"
-                                    >
+                                    <Link href={`/teams/${s.id}`} className="link-primary text-sm">
                                         {s.name}
                                     </Link>
                                 </li>
@@ -107,7 +94,7 @@ export default async function TeamDetailPage({ params }: PageProps) {
                 )}
             </div>
 
-            <Link href="/teams" className="text-sm text-gray-500 hover:underline dark:text-gray-400">
+            <Link href="/teams" className="secondary-text hover:underline">
                 ← Back to Teams
             </Link>
         </div>

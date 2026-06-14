@@ -98,7 +98,7 @@ export default async function AccessRequestsPage() {
             )}
 
             <div className="mt-6">
-                <Link href="/admin" className="text-sm text-gray-500 hover:underline dark:text-gray-400">
+                <Link href="/admin" className="secondary-text hover:underline">
                     ← Back to Admin
                 </Link>
             </div>

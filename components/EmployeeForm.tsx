@@ -3,6 +3,9 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
+import { Button } from '@/components/ui/Button';
+import { InputField, SelectField } from '@/components/ui/FormField';
+
 type Item = { id: string; name: string };
 
 type DefaultValues = {
@@ -25,9 +28,6 @@ type Props = {
     employees: Item[];
     defaultValues?: DefaultValues;
 };
-
-const inputCls =
-    'w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-teal-500';
 
 export function EmployeeForm({ roles, positions, teams, employees, defaultValues = {} }: Props) {
     const router = useRouter();
@@ -92,43 +92,25 @@ export function EmployeeForm({ roles, positions, teams, employees, defaultValues
 
             <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-3">
-                    <label className="flex flex-col gap-1">
-                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">First Name *</span>
-                        <input
-                            value={firstName}
-                            onChange={(e) => setFirstName(e.target.value)}
-                            required
-                            className={inputCls}
-                        />
-                    </label>
-                    <label className="flex flex-col gap-1">
-                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Last Name</span>
-                        <input value={lastName} onChange={(e) => setLastName(e.target.value)} className={inputCls} />
-                    </label>
+                    <InputField
+                        label="First Name *"
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                        required
+                    />
+                    <InputField label="Last Name" value={lastName} onChange={(e) => setLastName(e.target.value)} />
                 </div>
-                <label className="flex flex-col gap-1">
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Email</span>
-                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className={inputCls} />
-                </label>
-                <label className="flex flex-col gap-1">
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Phone</span>
-                    <input value={phone} onChange={(e) => setPhone(e.target.value)} className={inputCls} />
-                </label>
-                <label className="flex flex-col gap-1">
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Avatar URL</span>
-                    <input value={avatarUrl} onChange={(e) => setAvatarUrl(e.target.value)} className={inputCls} />
-                </label>
-                <label className="flex flex-col gap-1">
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Manager</span>
-                    <select value={managerId} onChange={(e) => setManagerId(e.target.value)} className={inputCls}>
-                        <option value="">— none —</option>
-                        {managerOptions.map((e) => (
-                            <option key={e.id} value={e.id}>
-                                {e.name}
-                            </option>
-                        ))}
-                    </select>
-                </label>
+                <InputField label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                <InputField label="Phone" value={phone} onChange={(e) => setPhone(e.target.value)} />
+                <InputField label="Avatar URL" value={avatarUrl} onChange={(e) => setAvatarUrl(e.target.value)} />
+                <SelectField label="Manager" value={managerId} onChange={(e) => setManagerId(e.target.value)}>
+                    <option value="">— none —</option>
+                    {managerOptions.map((e) => (
+                        <option key={e.id} value={e.id}>
+                            {e.name}
+                        </option>
+                    ))}
+                </SelectField>
             </div>
 
             <CheckboxGroup
@@ -151,20 +133,12 @@ export function EmployeeForm({ roles, positions, teams, employees, defaultValues
             />
 
             <div className="flex gap-3">
-                <button
-                    type="submit"
-                    disabled={loading}
-                    className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50 dark:bg-teal-600 dark:hover:bg-teal-700"
-                >
+                <Button type="submit" disabled={loading}>
                     {loading ? 'Saving…' : isEdit ? 'Save Changes' : 'Create Employee'}
-                </button>
-                <button
-                    type="button"
-                    onClick={() => router.back()}
-                    className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
-                >
+                </Button>
+                <Button type="button" variant="secondary" onClick={() => router.back()}>
                     Cancel
-                </button>
+                </Button>
             </div>
         </form>
     );

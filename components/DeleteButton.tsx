@@ -3,6 +3,8 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
+import { Button } from '@/components/ui/Button';
+
 type DeleteButtonProps = {
     url: string;
     redirectTo: string;
@@ -31,13 +33,9 @@ export function DeleteButton({ url, redirectTo, label = 'Delete' }: DeleteButton
     return (
         <div className="flex flex-col items-start gap-1">
             {error && <p className="text-sm text-red-600">{error}</p>}
-            <button
-                onClick={handleDelete}
-                disabled={loading}
-                className="rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50"
-            >
+            <Button variant="danger" onClick={handleDelete} disabled={loading}>
                 {loading ? 'Deleting…' : label}
-            </button>
+            </Button>
         </div>
     );
 }

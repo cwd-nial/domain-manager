@@ -3,6 +3,9 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
+import { Button } from '@/components/ui/Button';
+import { InputField, SelectField, TextareaField } from '@/components/ui/FormField';
+
 type Team = { id: string; name: string };
 
 type DefaultValues = {
@@ -16,9 +19,6 @@ type Props = {
     teams: Team[];
     defaultValues?: DefaultValues;
 };
-
-const inputCls =
-    'w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-teal-500';
 
 export function TeamForm({ teams, defaultValues = {} }: Props) {
     const router = useRouter();
@@ -66,47 +66,30 @@ export function TeamForm({ teams, defaultValues = {} }: Props) {
             {error && <p className="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-600">{error}</p>}
 
             <div className="space-y-4">
-                <label className="flex flex-col gap-1">
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Name *</span>
-                    <input value={name} onChange={(e) => setName(e.target.value)} required className={inputCls} />
-                </label>
-                <label className="flex flex-col gap-1">
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Description</span>
-                    <textarea
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                        rows={3}
-                        className={inputCls}
-                    />
-                </label>
-                <label className="flex flex-col gap-1">
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Parent Team</span>
-                    <select value={parentId} onChange={(e) => setParentId(e.target.value)} className={inputCls}>
-                        <option value="">— none —</option>
-                        {parentOptions.map((t) => (
-                            <option key={t.id} value={t.id}>
-                                {t.name}
-                            </option>
-                        ))}
-                    </select>
-                </label>
+                <InputField label="Name *" value={name} onChange={(e) => setName(e.target.value)} required />
+                <TextareaField
+                    label="Description"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    rows={3}
+                />
+                <SelectField label="Parent Team" value={parentId} onChange={(e) => setParentId(e.target.value)}>
+                    <option value="">— none —</option>
+                    {parentOptions.map((t) => (
+                        <option key={t.id} value={t.id}>
+                            {t.name}
+                        </option>
+                    ))}
+                </SelectField>
             </div>
 
             <div className="flex gap-3">
-                <button
-                    type="submit"
-                    disabled={loading}
-                    className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50 dark:bg-teal-600 dark:hover:bg-teal-700"
-                >
+                <Button type="submit" disabled={loading}>
                     {loading ? 'Saving…' : isEdit ? 'Save Changes' : 'Create Team'}
-                </button>
-                <button
-                    type="button"
-                    onClick={() => router.back()}
-                    className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
-                >
+                </Button>
+                <Button type="button" variant="secondary" onClick={() => router.back()}>
                     Cancel
-                </button>
+                </Button>
             </div>
         </form>
     );
